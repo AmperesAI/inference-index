@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Verify — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#020304;--txt:#eef2f6;--dim:#8a97a4;--faint:#4c5661;--line:#1c232b;
+    --green:#30d158;--red:#ff453a;--amber:#ffd60a;--blue:#8ab4ff;--violet:#b18cff;
+    --cond:'Barlow Condensed',sans-serif;--sans:'Barlow',sans-serif;--mono:'IBM Plex Mono',monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans)}
+  .slide{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    padding:70px min(9vw,110px);border-bottom:1px solid var(--line);position:relative}
+  .num{position:absolute;top:28px;right:36px;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:2px}
+  .kick{font-family:var(--mono);font-size:12px;letter-spacing:5px;color:var(--dim);text-transform:uppercase;margin-bottom:16px}
+  h1{font-family:var(--cond);font-weight:800;font-size:clamp(54px,9vw,120px);line-height:.95;text-transform:uppercase;
+    background:linear-gradient(180deg,#fff 55%,#5b6772);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-family:var(--cond);font-weight:800;font-size:clamp(40px,6vw,72px);line-height:1;text-transform:uppercase;margin-bottom:26px}
+  .big{font-size:clamp(18px,2.4vw,24px);color:var(--dim);max-width:900px;line-height:1.55}
+  .big b{color:var(--txt)}
+  .grid{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:34px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  .cell{background:#05070a;padding:26px}
+  .cell .v{font-family:var(--cond);font-weight:800;font-size:52px;line-height:1}
+  .cell .l{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--dim);margin-top:10px;text-transform:uppercase}
+  .cell h3{font-family:var(--cond);font-size:26px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .cell p{color:var(--dim);font-size:14.5px}
+  .g{color:var(--green)}.r{color:var(--red)}.a{color:var(--amber)}.b{color:var(--blue)}.vi{color:var(--violet)}
+  .mono{font-family:var(--mono)}
+  ul.pts{margin-top:26px;list-style:none;max-width:900px}
+  ul.pts li{padding:13px 0;border-bottom:1px solid var(--line);font-size:clamp(16px,2vw,20px);color:var(--dim)}
+  ul.pts li b{color:var(--txt)}
+  ul.pts li::before{content:'—  ';color:var(--green);font-family:var(--mono)}
+  .foot{position:absolute;bottom:24px;left:min(9vw,110px);font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:1.5px}
+  .url{font-family:var(--mono);color:var(--blue)}
+  .nav{position:fixed;bottom:20px;right:26px;font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:1px;z-index:9}
+  @media print{.slide{min-height:0;height:100vh;page-break-after:always;border:none}.nav{display:none}}
+</style>
+</head>
+<body>
+
+<div class="slide" id="s1">
+  <div class="num">01 / 10</div>
+  <div class="kick">Amperes · Apify VC Hackathon · Aug 2026</div>
+  <h1>Agent<br>Verify</h1>
+  <p class="big" style="margin-top:22px"><b>Same agent. Different model. Different behavior.</b><br>
+  The certification layer for model swaps — built on the Inference Index, the live price-per-quality index for LLM inference.</p>
+  <p class="big mono" style="margin-top:26px;font-size:15px">NarasingaMoorthy V · Pranav Guhathakurta &nbsp;·&nbsp; <span class="url">amperesai.github.io/inference-index</span></p>
+  <div class="foot">LIVE PRODUCT · REAL CODE · RESEARCH UNDER REVIEW AT TMLR</div>
+</div>
+
+<div class="slide">
+  <div class="num">02 / 10</div>
+  <div class="kick">The Problem</div>
+  <h2>Swaps ship blind</h2>
+  <p class="big">Every agent platform re-routes the model beneath its agents — for cost, availability, routing. The prompt is identical; the <b>behavior is not</b>: different tools called, malformed arguments, broken JSON, silent refusals. There is <b>no standard, portable pre-swap test</b> — every team hand-rolls its own, or ships and prays.</p>
+  <div class="grid g4">
+    <div class="cell"><div class="v r">daily</div><div class="l">model swaps across production agent fleets</div></div>
+    <div class="cell"><div class="v a">silent</div><div class="l">behavior drift — caught by users, not tests</div></div>
+    <div class="cell"><div class="v b">$100K–$2M</div><div class="l">monthly inference spend riding on those swaps</div></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">03 / 10</div>
+  <div class="kick">The Research Insight</div>
+  <h2>Even the judges disagree</h2>
+  <p class="big">Our research (under review at TMLR, 2026): downshifting a workload 70B→8B cuts cost <b>98.35%</b> — but when <b>10 independent judges</b> scored the identical output pairs, preservation ranged <b>61–97%, median ~90%</b>. A single judge is an anecdote. A panel with a disclosed spread is a measurement. <b>Nobody was pricing this — so we built the instrument.</b></p>
+  <div class="grid g4">
+    <div class="cell"><div class="v g">98.35%</div><div class="l">cost cut · judge-independent arithmetic</div></div>
+    <div class="cell"><div class="v a">61–97%</div><div class="l">preservation spread across 10 judges</div></div>
+    <div class="cell"><div class="v vi">90%</div><div class="l">panel median · flagship pair</div></div>
+    <div class="cell"><div class="v b">11.4K</div><div class="l">prompts · 16 public benchmarks</div></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">04 / 10</div>
+  <div class="kick">Product 1 · Today's Build</div>
+  <h2>Agent Verify</h2>
+  <p class="big">Run your agent's task suite across a baseline and N swap candidates on <b>any OpenAI-compatible endpoint</b>. Five behavioral dimensions. One verdict: <b class="g">CERTIFIED</b> / <b class="a">CAUTION</b> / <b class="r">FAIL</b>.</p>
+  <ul class="pts">
+    <li><b>Tool fidelity</b> — same tools as baseline, no phantom calls (a distractor task catches over-callers)</li>
+    <li><b>Arg + schema validity</b> — arguments parse, JSON outputs hold shape</li>
+    <li><b>Panel equivalence</b> — judge panel, median + spread, never one judge</li>
+    <li><b>CI-ready</b> — single stdlib Python file, exits non-zero on FAIL, ~5 min per run</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="num">05 / 10</div>
+  <div class="kick">Product 2 · The Data Layer</div>
+  <h2>The Inference Index</h2>
+  <p class="big">The live market index that prices LLM inference by <b>$/MQT — dollars per million quality-adjusted tokens</b>. 40 models, 11 providers, every price linked to its official source. Verify decides <b>if</b> you can swap; the Index decides <b>what</b> you swap to.</p>
+  <div class="grid g4">
+    <div class="cell"><div class="v">40</div><div class="l">models tracked live</div></div>
+    <div class="cell"><div class="v">11</div><div class="l">providers · official pages only</div></div>
+    <div class="cell"><div class="v g">$/MQT</div><div class="l">the number no pricing page publishes</div></div>
+    <div class="cell"><div class="v b">0</div><div class="l">servers — static, scraped, self-updating</div></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">06 / 10</div>
+  <div class="kick">Architecture · Sponsor Stack</div>
+  <h2>All three tools, load-bearing</h2>
+  <div class="grid g2">
+    <div class="cell"><h3 class="a">Apify</h3><p>The collection layer: <span class="mono">website-content-crawler</span> over 11 official pricing pages (JS-heavy, bot-gated — the honest reason a headless crawler exists) + status pages. Ready-to-run actor inputs in the repo.</p></div>
+    <div class="cell"><h3 class="b">n8n</h3><p>The nervous system: schedule → Apify → LLM price extraction → diff vs live index → Slack market-move alert → GitHub dispatch. Importable workflow JSON in the repo.</p></div>
+    <div class="cell"><h3 class="vi">Bolt</h3><p>The Pilot Console: workload sliders → per-workload savings simulation, fetching the live index data. One-paste build prompt in the repo.</p></div>
+    <div class="cell"><h3 class="g">GitHub Actions + Pages</h3><p>Recompute → commit → redeploy. A market move becomes a live index change in minutes. Zero servers anywhere.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">07 / 10</div>
+  <div class="kick">Demo</div>
+  <h2>Mission Control</h2>
+  <p class="big">Live on stage: three swap candidates race through the task suite — every tool call, argument, and schema check on screen — then the verdict stamps land. Simulation clearly labeled; the identical console renders your fleet's real run from one CLI command.</p>
+  <ul class="pts">
+    <li>Demo: <span class="url">amperesai.github.io/inference-index/agent-verify.html?demo</span></li>
+    <li>Index: <span class="url">amperesai.github.io/inference-index</span></li>
+    <li>Code: <span class="url">github.com/AmperesAI/inference-index</span></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="num">08 / 10</div>
+  <div class="kick">Go-To-Market</div>
+  <h2>Three tracks, in conversation</h2>
+  <div class="grid g2">
+    <div class="cell"><h3 class="r">Provider · target: Databricks</h3><p>Third-party $/MQT scores for Foundation Model API serving — price-performance proof no vendor deck can match. Verify runs against serving endpoints natively.</p></div>
+    <div class="cell"><h3 class="b">Buyer · target: Cursor</h3><p>Frontier coding spend routed by quality-adjusted price; code-task panel runs next on the roadmap.</p></div>
+    <div class="cell"><h3 class="vi">Open-model · target: Nebius</h3><p>The flagship verified pair runs on exactly the open models Nebius serves — third-party economics for their catalog.</p></div>
+    <div class="cell"><h3 class="g">The wedge</h3><p>Free neutral index → inbound → Verify runs on real fleets → paid pilots on Amperes, the inference control plane underneath.</p></div>
+  </div>
+  <p class="big mono" style="font-size:13px;margin-top:18px;color:var(--faint)">Early conversations underway — no signed pilots or endorsements yet. That candor is the pitch.</p>
+</div>
+
+<div class="slide">
+  <div class="num">09 / 10</div>
+  <div class="kick">Why We Win</div>
+  <h2>The moat is the panel</h2>
+  <ul class="pts">
+    <li><b>Anyone can scrape prices.</b> Only a team with eval infrastructure can keep producing panel-verified quality — that's the data asset that compounds.</li>
+    <li><b>Working control plane behind it:</b> Amperes — OpenAI-compatible proxy, multi-objective routing, confidence-gated escalation, governance, 450+ tests.</li>
+    <li><b>Research-grade credibility:</b> 10-judge methodology, 11.4K-prompt eval, under review at TMLR — and we disclose the judge spread instead of hiding it.</li>
+    <li><b>Two technical founders:</b> inference/data infra (Moorthy) + production routing &amp; SOC2-grade compliance at Flagright, Wharton/UPenn (Pranav).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="num">10 / 10</div>
+  <div class="kick">The Ask</div>
+  <h2>Certify your fleet today</h2>
+  <p class="big">It's live right now. One command runs Agent Verify against your endpoints — Databricks serving, Nebius, OpenAI, Groq, vLLM. We're signing <b>three fleet design partners</b> to turn sample reports into certified swaps on real traffic.</p>
+  <div class="grid g4">
+    <div class="cell"><div class="v g">LIVE</div><div class="l">amperesai.github.io/inference-index</div></div>
+    <div class="cell"><div class="v b">OPEN</div><div class="l">github.com/AmperesAI/inference-index</div></div>
+    <div class="cell"><div class="v vi">3</div><div class="l">design partner slots</div></div>
+  </div>
+  <p class="big mono" style="margin-top:26px;font-size:15px">Amperes — the AI inference control plane · <span class="url">amperes.pro</span></p>
+</div>
+
+<div class="nav">→ / ← OR CLICK TO ADVANCE · CMD+P FOR PDF</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+function go(n){cur=Math.max(0,Math.min(slides.length-1,n));slides[cur].scrollIntoView({behavior:'smooth'});}
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);});
+addEventListener('click',e=>{if(!e.target.closest('a'))go(cur+1);});
+</script>
+</body>
+</html>
