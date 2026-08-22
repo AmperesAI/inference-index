@@ -1,0 +1,13 @@
+{
+  "_actor": "apify/cheerio-scraper",
+  "_purpose": "Fast scheduled scrape of provider status pages for the incident overlay (roadmap). Run every 5 minutes on an Apify Schedule.",
+  "startUrls": [
+    { "url": "https://status.openai.com/" },
+    { "url": "https://status.anthropic.com/" },
+    { "url": "https://status.nebius.ai/" },
+    { "url": "https://status.databricks.com/" },
+    { "url": "https://status.together.ai/" }
+  ],
+  "proxyConfiguration": { "useApifyProxy": true },
+  "pageFunction": "async function pageFunction(context) { const { $, request } = context; return { url: request.url, status_text: $('body').text().slice(0, 2000), scraped_at: new Date().toISOString() }; }"
+}

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inference Index — the price-per-quality index for LLM inference</title>
+<meta name="description" content="Live index ranking LLM inference providers by $/MQT — dollars per million quality-adjusted tokens — using a 10-judge evaluation panel. Prices scraped from official pages by Apify, orchestrated by n8n.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07090c; --panel:#0d1117; --panel2:#11161d; --line:#1d2530;
+    --txt:#dbe4ee; --dim:#7c8b9d; --faint:#4a5765;
+    --green:#3ddc84; --red:#ff5d5d; --amber:#ffc24b; --cyan:#4dd0e1; --violet:#b18cff;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .mono{font-family:var(--mono)}
+
+  /* ticker */
+  .ticker-wrap{background:#04060a;border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap}
+  .ticker{display:inline-block;padding:7px 0;font-family:var(--mono);font-size:12.5px;animation:tick 60s linear infinite}
+  .ticker span{margin:0 22px;color:var(--dim)}
+  .ticker b{color:var(--txt);font-weight:500}
+  .up{color:var(--green)} .down{color:var(--red)} .flat{color:var(--faint)}
+  @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  header{max-width:1180px;margin:0 auto;padding:34px 20px 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:14px}
+  .logo{font-family:var(--mono);font-weight:600;font-size:26px;letter-spacing:.5px}
+  .logo .idx{color:var(--green)}
+  .live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--green);
+    border:1px solid #1d4030;background:#0a1810;border-radius:20px;padding:3px 10px;letter-spacing:1px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .asof{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+  .tag{max-width:1180px;margin:0 auto;padding:0 20px 6px;color:var(--dim);font-size:15px}
+  .tag b{color:var(--txt)}
+
+  .stats{max-width:1180px;margin:18px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .stat .v{font-family:var(--mono);font-size:26px;font-weight:600}
+  .stat .l{font-size:12px;color:var(--dim);margin-top:4px;letter-spacing:.3px}
+  .g{color:var(--green)} .a{color:var(--amber)} .c{color:var(--cyan)} .vio{color:var(--violet)}
+
+  section{max-width:1180px;margin:30px auto;padding:0 20px}
+  h2{font-size:15px;font-family:var(--mono);letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);background:var(--panel);
+    border-radius:16px;padding:5px 13px;cursor:pointer;user-select:none}
+  .chip.on{color:#04110a;background:var(--green);border-color:var(--green);font-weight:600}
+
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);
+    text-align:right;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:nth-child(1),th:nth-child(2),th:nth-child(3){text-align:left}
+  td{padding:10px 14px;border-bottom:1px solid #131a23;text-align:right;font-family:var(--mono);white-space:nowrap}
+  td:nth-child(1),td:nth-child(2),td:nth-child(3){text-align:left}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--panel2)}
+  .rank{color:var(--faint)}
+  .model{color:var(--txt);font-weight:500}
+  .prov{color:var(--dim);font-size:12.5px}
+  .badge{font-size:10px;letter-spacing:1px;border-radius:4px;padding:2px 7px;font-weight:600}
+  .badge.verified{color:#04110a;background:var(--green)}
+  .badge.pending{color:var(--dim);background:#141b24;border:1px solid var(--line)}
+  .mqt{font-weight:600}
+  .spread{color:var(--faint);font-size:11px}
+
+  .spot{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  .card h3{font-size:16px;margin-bottom:8px}
+  .card p{color:var(--dim);font-size:13.5px}
+  .bigqix{font-family:var(--mono);font-size:54px;font-weight:600;color:var(--green);line-height:1.1}
+  .math{font-family:var(--mono);font-size:13px;color:var(--dim);background:#0a0f14;border:1px solid var(--line);
+    border-radius:8px;padding:12px 14px;margin-top:12px}
+  .math b{color:var(--txt)}
+  .warn{border-left:3px solid var(--amber);background:#181305;border-radius:6px;padding:12px 14px;margin-top:14px;
+    color:#e8d5a0;font-size:13px}
+
+  .tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .track .who{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+  .t1 .who{color:var(--red)} .t2 .who{color:var(--cyan)} .t3 .who{color:var(--violet)}
+
+  footer{border-top:1px solid var(--line);margin-top:44px;padding:26px 20px 40px;text-align:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+  footer .stack{margin-top:8px;color:var(--dim)}
+  @media(max-width:820px){.spot{grid-template-columns:1fr}.bigqix{font-size:42px}}
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
+
+<header>
+  <div class="logo">INFERENCE<span class="idx">·INDEX</span></div>
+  <div class="live"><span class="dot"></span>LIVE</div>
+  <div class="asof" id="asof">as of —</div>
+</header>
+<p class="tag">Tokens are commodities. <b>Quality isn't.</b> The first index that prices LLM inference by <b>$/MQT</b> — dollars per million <i>quality-adjusted</i> tokens, scored by a 10-judge evaluation panel.</p>
+
+<div class="stats">
+  <div class="stat"><div class="v g">98.35%</div><div class="l">verified cost reduction · flagship pair (judge-independent)</div></div>
+  <div class="stat"><div class="v c">10</div><div class="l">independent judges per verified preservation score</div></div>
+  <div class="stat"><div class="v vio">90%</div><div class="l">panel-median quality preservation · flagship pair</div></div>
+  <div class="stat"><div class="v a">61–97%</div><div class="l">full judge spread — why single-judge scores are fiction</div></div>
+</div>
+
+<section>
+  <h2>Market Index — scraped from official pricing pages</h2>
+  <div class="controls" id="chips"></div>
+  <div class="tblwrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Model</th><th>Provider</th>
+        <th>In $/1M</th><th>Out $/1M</th><th>Blended $/1M</th>
+        <th>Panel preservation</th><th>$/MQT</th><th>Status</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="9" style="text-align:center;color:var(--faint)">loading index…</td></tr></tbody>
+    </table>
+  </div>
+  <p style="color:var(--faint);font-size:12px;margin-top:8px">Blended = 3:1 input:output. Every price links to the official page it was scraped from. <span style="color:var(--dim)">Panel preservation appears only where the 10-judge panel has scored a verified route pair — no modeled guesses, ever.</span></p>
+</section>
+
+<section>
+  <h2>Verified route pair — flagship</h2>
+  <div class="spot">
+    <div class="card">
+      <h3 id="pairname">Llama-3.1-70B → Llama-3.1-8B</h3>
+      <p>The identical response pairs were re-scored by <b>10 independent judge models</b>. Cost reduction is arithmetic and judge-independent; preservation is reported as the panel median with the full spread disclosed.</p>
+      <div class="math">
+        QIX = savings × preservation<sub>median</sub><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;= <b>98.35%</b> × <b>0.90</b> = <b class="g" id="qixmath">88.5</b><br>
+        <span style="color:var(--faint)">judge spread: Mistral-7B 97% (lenient) · Qwen-32B / DeepSeek-67B 82% · Gemma-27B 74% (strict)</span>
+      </div>
+      <div class="warn">⚠ <b>Real-traffic caveat, stated up front:</b> on live chat workloads the cheap model is <i>usable</i> ~92–95% of the time, but rated <i>equivalent-or-better</i> only ~21–32%. Downshifting is a managed trade, not free money — which is exactly why routing needs escalation and an honest index.</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--faint)">QUALITY-PRESERVED SAVINGS</div>
+      <div class="bigqix">QIX 88.5</div>
+      <p style="margin-top:8px">88.5% of this workload's spend is eliminable at panel-median quality — on the open models served by Nebius, Together &amp; co.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Pilot tracks</h2>
+  <div class="tracks">
+    <div class="card track t1"><div class="who">Provider track · Databricks</div>
+      <p>A neutral, third-party <b>$/MQT</b> score for Foundation Model API serving — price-performance proof no vendor deck can match.</p></div>
+    <div class="card track t2"><div class="who">Buyer track · Cursor</div>
+      <p>Frontier coding spend routed by <b>$/MQT</b> instead of raw price — with panel-verified downshift pairs for code tasks.</p></div>
+    <div class="card track t3"><div class="who">Open-model track · Nebius</div>
+      <p>The flagship verified pair runs on exactly the open models Nebius serves. The index is the sales sheet.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>How it stays live</h2>
+  <div class="card"><p style="font-size:14px">
+    <b style="color:var(--txt)">Apify</b> crawls 11 official pricing pages (they're JS-heavy — that's why a headless crawler, not curl) →
+    <b style="color:var(--txt)">n8n</b> extracts &amp; diffs prices every 6h, fires market-move alerts, and dispatches to GitHub →
+    <b style="color:var(--txt)">GitHub Actions</b> recomputes $/MQT and commits <span class="mono">data.json</span> →
+    this page redeploys. Zero servers. A market move becomes a live index change in minutes.
+    <b style="color:var(--txt)">Bolt</b> powers the Pilot Console — paste a workload, get a per-workload savings simulation.
+    Full pipeline in the <a href="https://github.com/vnmoorthy/inference-index">repo</a>.
+  </p></div>
+</section>
+
+<footer>
+  <a href="https://github.com/vnmoorthy/inference-index">github.com/vnmoorthy/inference-index</a> · MIT · index data CC-BY-4.0
+  <div class="stack">scraped by Apify · orchestrated by n8n · console by Bolt · methodology: 10-judge panel (TMLR-track research, 2026)</div>
+</footer>
+
+<script>
+const fmt = n => n==null ? '—' : (n<10 ? n.toFixed(2) : n.toFixed(1));
+let DATA=null, filter='All';
+
+fetch('data.json').then(r=>r.json()).then(d=>{DATA=d;render();ticker();}).catch(()=>{
+  document.getElementById('rows').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--red)">data.json not found</td></tr>';
+});
+
+function blended(m){ return m.units ? null : (3*m.input_per_1m + m.output_per_1m)/4; }
+
+function rows(){
+  const all=[];
+  DATA.providers.forEach(p=>p.models.forEach(m=>all.push({...m,provider:p.provider})));
+  all.forEach(m=>{
+    m.blend=blended(m);
+    const v=(DATA.verified_pairs||[]).find(v=>v.cheap_model===m.model);
+    m.pres = v ? v.preservation_median : null;
+    m.spread = v ? v.preservation_spread : null;
+    m.mqt = v ? m.blend / v.preservation_median : null;
+  });
+  all.sort((a,b)=>(a.blend??Infinity)-(b.blend??Infinity)); /* unit-priced rows (DBU) sort last, unranked */
+  return all;
+}
+
+function render(){
+  const all=rows();
+  const provs=['All','Verified',...new Set(all.map(m=>m.provider))];
+  document.getElementById('chips').innerHTML=provs.map(p=>
+    `<span class="chip ${p===filter?'on':''}" onclick="filter='${p}';render()">${p}</span>`).join('');
+  const shown=all.filter(m=>filter==='All'||(filter==='Verified'?m.pres:m.provider===filter));
+  document.getElementById('rows').innerHTML=shown.map((m,i)=>{
+    const u=m.units?' <span class="spread">'+m.units+'</span>':'';
+    const money=v=>m.units?fmt(v)+u:'$'+fmt(v);
+    return `<tr>
+    <td class="rank">${m.units?'·':String(i+1).padStart(2,'0')}</td>
+    <td class="model">${m.model}</td>
+    <td class="prov"><a href="${m.source}" target="_blank" rel="noopener">${m.provider}</a></td>
+    <td>${money(m.input_per_1m)}</td><td>${money(m.output_per_1m)}</td>
+    <td><b>${m.units?'<span class="spread">unranked (DBU)</span>':'$'+fmt(m.blend)}</b></td>
+    <td>${m.pres?`<span class="g">${Math.round(m.pres*100)}%</span> <span class="spread">(${m.spread})</span>`:'<span class="spread">—</span>'}</td>
+    <td class="mqt">${m.mqt?'$'+fmt(m.mqt):'<span class="spread">pending</span>'}</td>
+    <td>${m.pres?'<span class="badge verified">VERIFIED</span>':'<span class="badge pending">PANEL PENDING</span>'}</td>
+  </tr>`}).join('');
+  document.getElementById('asof').textContent='as of '+DATA.as_of+' · '+all.length+' models · '+(DATA.providers.length)+' providers';
+}
+
+function ticker(){
+  const all=rows().filter(m=>!m.units);
+  const items=all.map(m=>{
+    const d=m.delta_pct==null?'':(m.delta_pct===0?` <span class="flat">—</span>`:(m.delta_pct<0?` <span class="up">▼${Math.abs(m.delta_pct)}%</span>`:` <span class="down">▲${m.delta_pct}%</span>`));
+    return `<span><b>${m.model}</b> $${fmt(m.blend)}/1M${d}</span>`;
+  }).join('');
+  document.getElementById('ticker').innerHTML=items+items; /* doubled for seamless loop */
+}
+</script>
+</body>
+</html>

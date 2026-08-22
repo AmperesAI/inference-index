@@ -1,0 +1,61 @@
+name: refresh-index
+
+on:
+  repository_dispatch:
+    types: [prices-updated]
+  workflow_dispatch: {}
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # When n8n dispatched fresh scraped prices, write them as the new seed.
+      - name: Ingest dispatched prices
+        if: github.event_name == 'repository_dispatch'
+        env:
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: |
+          python3 - <<'EOF'
+          import json, os
+          payload = json.loads(os.environ["PAYLOAD"])
+          scraped = payload.get("scraped")
+          if scraped:
+              seed = json.load(open("pipeline/seed_prices.json"))
+              rows = {m["model"].lower(): m for p in seed["providers"] for m in p["models"]}
+              for s in scraped:
+                  key = s["model"].lower()
+                  if key in rows:
+                      rows[key]["input_per_1m"] = s["input_per_1m"]
+                      rows[key]["output_per_1m"] = s["output_per_1m"]
+              json.dump(seed, open("pipeline/seed_prices.json", "w"), indent=2)
+          EOF
+
+      # Direct Apify pull on the cron path (skipped if no token configured).
+      - name: Apify pricing crawl
+        if: github.event_name == 'schedule'
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          if [ -z "$APIFY_TOKEN" ]; then
+            echo "APIFY_TOKEN not set — keeping checked-in price snapshot"
+          else
+            echo "Apify crawl wired via n8n dispatch in v1; direct pull is roadmap"
+          fi
+
+      - name: Compute index
+        run: python3 pipeline/compute_index.py
+
+      - name: Commit data.json
+        run: |
+          git config user.name "inference-index-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/data.json pipeline/seed_prices.json
+          git diff --cached --quiet || git commit -m "data: refresh index ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git push

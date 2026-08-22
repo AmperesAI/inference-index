@@ -1,0 +1,416 @@
+{
+  "as_of": "2026-08-22",
+  "methodology": "Blended $/1M = (3*input + output)/4. $/MQT = blended / panel-median preservation, verified pairs only.",
+  "providers": [
+    {
+      "provider": "OpenAI",
+      "models": [
+        {
+          "model": "gpt-5.6-sol",
+          "input_per_1m": 4.0,
+          "output_per_1m": 20.0,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "gpt-5.6-terra",
+          "input_per_1m": 2.0,
+          "output_per_1m": 12.0,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "input_per_1m": 0.2,
+          "output_per_1m": 1.2,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "gpt-5.5",
+          "input_per_1m": 5.0,
+          "output_per_1m": 30.0,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Anthropic",
+      "models": [
+        {
+          "model": "Claude Fable 5",
+          "input_per_1m": 10.0,
+          "output_per_1m": 50.0,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Claude Opus 5",
+          "input_per_1m": 5.0,
+          "output_per_1m": 25.0,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Claude Sonnet 5",
+          "input_per_1m": 2.0,
+          "output_per_1m": 10.0,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "confidence": "official",
+          "note": "Launch intro price made permanent",
+          "delta_pct": null
+        },
+        {
+          "model": "Claude Haiku 4.5",
+          "input_per_1m": 1.0,
+          "output_per_1m": 5.0,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Google Gemini API",
+      "models": [
+        {
+          "model": "gemini-3.7-flash",
+          "input_per_1m": 0.75,
+          "output_per_1m": 3.75,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "confidence": "official",
+          "note": "Promo price through Dec 31 2026; $1.50/$7.50 from Jan 1 2027",
+          "delta_pct": null
+        },
+        {
+          "model": "gemini-3.5-flash",
+          "input_per_1m": 1.5,
+          "output_per_1m": 9.0,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "gemini-3.5-flash-lite",
+          "input_per_1m": 0.3,
+          "output_per_1m": 2.5,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "gemini-2.5-pro",
+          "input_per_1m": 1.25,
+          "output_per_1m": 10.0,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "confidence": "official",
+          "note": "<=200k-token prompts; $2.50/$15.00 above",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Nebius Token Factory",
+      "models": [
+        {
+          "model": "meta-llama/Llama-3.3-70B-Instruct",
+          "input_per_1m": 0.13,
+          "output_per_1m": 0.4,
+          "source": "https://tokenfactory.nebius.com/",
+          "confidence": "official",
+          "note": "Serverless endpoint scheduled for deprecation Aug 31 2026; dedicated endpoints unaffected",
+          "delta_pct": null
+        },
+        {
+          "model": "deepseek-ai/DeepSeek-V4-Pro",
+          "input_per_1m": 1.75,
+          "output_per_1m": 3.5,
+          "source": "https://tokenfactory.nebius.com/",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+          "input_per_1m": 0.2,
+          "output_per_1m": 0.6,
+          "source": "https://tokenfactory.nebius.com/",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "openai/gpt-oss-120b",
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6,
+          "source": "https://tokenfactory.nebius.com/",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-fast",
+          "input_per_1m": 0.03,
+          "output_per_1m": 0.09,
+          "source": "https://docs.tokenfactory.nebius.com/api-reference/examples/list-of-models.md",
+          "confidence": "secondary",
+          "note": "From official docs API example, not the live catalog \u2014 Llama 3.1 no longer listed serverless",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Databricks Foundation Model APIs",
+      "models": [
+        {
+          "model": "Kimi K3",
+          "input_per_1m": 42.857,
+          "output_per_1m": 214.286,
+          "units": "DBU/1M",
+          "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
+          "confidence": "official",
+          "note": "Quoted in DBU; USD depends on workspace cloud/tier rate",
+          "delta_pct": null
+        },
+        {
+          "model": "Kimi K2.7",
+          "input_per_1m": 13.571,
+          "output_per_1m": 57.143,
+          "units": "DBU/1M",
+          "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "GLM-5.2",
+          "input_per_1m": 20.0,
+          "output_per_1m": 62.857,
+          "units": "DBU/1M",
+          "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Together AI",
+      "models": [
+        {
+          "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+          "input_per_1m": 1.04,
+          "output_per_1m": 1.04,
+          "source": "https://www.together.ai/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Llama 3 8B Instruct Lite",
+          "input_per_1m": 0.14,
+          "output_per_1m": 0.14,
+          "source": "https://www.together.ai/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "DeepSeek V4 Pro",
+          "input_per_1m": 1.74,
+          "output_per_1m": 3.48,
+          "source": "https://www.together.ai/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Qwen3.7-Max",
+          "input_per_1m": 1.25,
+          "output_per_1m": 3.75,
+          "source": "https://www.together.ai/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Groq",
+      "models": [
+        {
+          "model": "openai/gpt-oss-120b",
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6,
+          "source": "https://console.groq.com/docs/models",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "openai/gpt-oss-20b",
+          "input_per_1m": 0.075,
+          "output_per_1m": 0.3,
+          "source": "https://console.groq.com/docs/models",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "qwen/qwen3.6-27b",
+          "input_per_1m": 0.6,
+          "output_per_1m": 3.0,
+          "source": "https://console.groq.com/docs/models",
+          "confidence": "official",
+          "note": "Preview model",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Fireworks AI",
+      "models": [
+        {
+          "model": "DeepSeek V4 Pro",
+          "input_per_1m": 1.74,
+          "output_per_1m": 3.48,
+          "source": "https://docs.fireworks.ai/serverless/pricing",
+          "confidence": "official",
+          "note": "Standard tier; cached input $0.145",
+          "delta_pct": null
+        },
+        {
+          "model": "Kimi K3",
+          "input_per_1m": 3.0,
+          "output_per_1m": 15.0,
+          "source": "https://docs.fireworks.ai/serverless/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Qwen 3.7 Plus",
+          "input_per_1m": 0.4,
+          "output_per_1m": 1.6,
+          "source": "https://docs.fireworks.ai/serverless/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "OpenAI GPT OSS 120B",
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6,
+          "source": "https://docs.fireworks.ai/serverless/pricing",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "Mistral AI",
+      "models": [
+        {
+          "model": "Mistral Large 3",
+          "input_per_1m": 0.5,
+          "output_per_1m": 1.5,
+          "source": "https://mistral.ai/pricing/api",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Mistral Medium 3.5",
+          "input_per_1m": 1.5,
+          "output_per_1m": 7.5,
+          "source": "https://mistral.ai/pricing/api",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Mistral Small 4",
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6,
+          "source": "https://mistral.ai/pricing/api",
+          "confidence": "official",
+          "delta_pct": null
+        },
+        {
+          "model": "Codestral",
+          "input_per_1m": 0.3,
+          "output_per_1m": 0.9,
+          "source": "https://mistral.ai/pricing/api",
+          "confidence": "official",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "input_per_1m": 1.32,
+          "output_per_1m": 3.96,
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "confidence": "official",
+          "note": "Peak, cache-miss; off-peak is 50% of peak",
+          "delta_pct": null
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "input_per_1m": 0.44,
+          "output_per_1m": 1.32,
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "confidence": "official",
+          "note": "Peak, cache-miss; off-peak is 50% of peak",
+          "delta_pct": null
+        }
+      ]
+    },
+    {
+      "provider": "xAI",
+      "models": [
+        {
+          "model": "grok-4.6",
+          "input_per_1m": 2.0,
+          "output_per_1m": 6.0,
+          "source": "https://docs.x.ai/docs/models",
+          "confidence": "official",
+          "note": "<200k context; $4/$12 above",
+          "delta_pct": null
+        },
+        {
+          "model": "grok-4.5",
+          "input_per_1m": 2.0,
+          "output_per_1m": 6.0,
+          "source": "https://docs.x.ai/docs/models",
+          "confidence": "official",
+          "note": "<200k context; $4/$12 above",
+          "delta_pct": null
+        },
+        {
+          "model": "grok-4.3",
+          "input_per_1m": 1.25,
+          "output_per_1m": 2.5,
+          "source": "https://docs.x.ai/docs/models",
+          "confidence": "official",
+          "note": "<200k context; $2.50/$5 above",
+          "delta_pct": null
+        }
+      ]
+    }
+  ],
+  "verified_pairs": [
+    {
+      "baseline_model": "Llama 3.1 70B Instruct",
+      "cheap_model": "meta-llama/Meta-Llama-3.1-8B-Instruct-fast",
+      "preservation_median": 0.9,
+      "preservation_spread": "61\u201397% across 10 judges",
+      "savings_pct": 98.35,
+      "qix": 88.5,
+      "note": "Benchmark workloads. Real-traffic caveat: usable ~92\u201395%, equivalent-or-better ~21\u201332%.",
+      "cheap_model_label": "Llama 3.1 8B Instruct"
+    }
+  ],
+  "skipped": [],
+  "notes": [
+    "Llama 3.1 (70B/8B) has been broadly delisted from serverless catalogs; the verified-pair 8B row comes from an official Nebius docs example (marked secondary). The panel-verified pair itself is a research artifact and does not depend on current listings.",
+    "Databricks Foundation Model API prices are quoted in DBU per 1M tokens; USD depends on the workspace's cloud/region DBU rate, so DBU rows are shown unranked.",
+    "Groq's marketing pricing page redirects to the homepage; prices were read from the official console docs model listing.",
+    "Anthropic notes Claude 4.7+ models use a tokenizer producing ~30% more tokens for the same text \u2014 effective per-request costs differ from per-token price alone."
+  ]
+}
