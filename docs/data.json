@@ -11,7 +11,7 @@
           "output_per_1m": 20.0,
           "source": "https://developers.openai.com/api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gpt-5.6-terra",
@@ -19,7 +19,7 @@
           "output_per_1m": 12.0,
           "source": "https://developers.openai.com/api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gpt-5.6-luna",
@@ -27,7 +27,7 @@
           "output_per_1m": 1.2,
           "source": "https://developers.openai.com/api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gpt-5.5",
@@ -35,7 +35,7 @@
           "output_per_1m": 30.0,
           "source": "https://developers.openai.com/api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -48,7 +48,7 @@
           "output_per_1m": 50.0,
           "source": "https://platform.claude.com/docs/en/about-claude/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Claude Opus 5",
@@ -56,7 +56,7 @@
           "output_per_1m": 25.0,
           "source": "https://platform.claude.com/docs/en/about-claude/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Claude Sonnet 5",
@@ -65,7 +65,7 @@
           "source": "https://platform.claude.com/docs/en/about-claude/pricing",
           "confidence": "official",
           "note": "Launch intro price made permanent",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Claude Haiku 4.5",
@@ -73,7 +73,7 @@
           "output_per_1m": 5.0,
           "source": "https://platform.claude.com/docs/en/about-claude/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -87,7 +87,7 @@
           "source": "https://ai.google.dev/gemini-api/docs/pricing",
           "confidence": "official",
           "note": "Promo price through Dec 31 2026; $1.50/$7.50 from Jan 1 2027",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gemini-3.5-flash",
@@ -95,7 +95,7 @@
           "output_per_1m": 9.0,
           "source": "https://ai.google.dev/gemini-api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gemini-3.5-flash-lite",
@@ -103,7 +103,7 @@
           "output_per_1m": 2.5,
           "source": "https://ai.google.dev/gemini-api/docs/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "gemini-2.5-pro",
@@ -112,7 +112,7 @@
           "source": "https://ai.google.dev/gemini-api/docs/pricing",
           "confidence": "official",
           "note": "<=200k-token prompts; $2.50/$15.00 above",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -126,7 +126,7 @@
           "source": "https://tokenfactory.nebius.com/",
           "confidence": "official",
           "note": "Serverless endpoint scheduled for deprecation Aug 31 2026; dedicated endpoints unaffected",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "deepseek-ai/DeepSeek-V4-Pro",
@@ -134,7 +134,7 @@
           "output_per_1m": 3.5,
           "source": "https://tokenfactory.nebius.com/",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
@@ -142,7 +142,7 @@
           "output_per_1m": 0.6,
           "source": "https://tokenfactory.nebius.com/",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "openai/gpt-oss-120b",
@@ -150,7 +150,7 @@
           "output_per_1m": 0.6,
           "source": "https://tokenfactory.nebius.com/",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-fast",
@@ -159,7 +159,7 @@
           "source": "https://docs.tokenfactory.nebius.com/api-reference/examples/list-of-models.md",
           "confidence": "secondary",
           "note": "From official docs API example, not the live catalog \u2014 Llama 3.1 no longer listed serverless",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -174,7 +174,7 @@
           "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
           "confidence": "official",
           "note": "Quoted in DBU; USD depends on workspace cloud/tier rate",
-          "delta_pct": null
+          "delta_pct": 1329
         },
         {
           "model": "Kimi K2.7",
@@ -183,7 +183,7 @@
           "units": "DBU/1M",
           "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "GLM-5.2",
@@ -192,7 +192,7 @@
           "units": "DBU/1M",
           "source": "https://www.databricks.com/product/pricing/foundation-model-serving",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -205,7 +205,7 @@
           "output_per_1m": 1.04,
           "source": "https://www.together.ai/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Llama 3 8B Instruct Lite",
@@ -213,7 +213,7 @@
           "output_per_1m": 0.14,
           "source": "https://www.together.ai/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "DeepSeek V4 Pro",
@@ -221,7 +221,7 @@
           "output_per_1m": 3.48,
           "source": "https://www.together.ai/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Qwen3.7-Max",
@@ -229,7 +229,7 @@
           "output_per_1m": 3.75,
           "source": "https://www.together.ai/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -242,7 +242,7 @@
           "output_per_1m": 0.6,
           "source": "https://console.groq.com/docs/models",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "openai/gpt-oss-20b",
@@ -250,7 +250,7 @@
           "output_per_1m": 0.3,
           "source": "https://console.groq.com/docs/models",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "qwen/qwen3.6-27b",
@@ -259,7 +259,7 @@
           "source": "https://console.groq.com/docs/models",
           "confidence": "official",
           "note": "Preview model",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -273,7 +273,7 @@
           "source": "https://docs.fireworks.ai/serverless/pricing",
           "confidence": "official",
           "note": "Standard tier; cached input $0.145",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Kimi K3",
@@ -281,7 +281,7 @@
           "output_per_1m": 15.0,
           "source": "https://docs.fireworks.ai/serverless/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Qwen 3.7 Plus",
@@ -289,7 +289,7 @@
           "output_per_1m": 1.6,
           "source": "https://docs.fireworks.ai/serverless/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "OpenAI GPT OSS 120B",
@@ -297,7 +297,7 @@
           "output_per_1m": 0.6,
           "source": "https://docs.fireworks.ai/serverless/pricing",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -310,7 +310,7 @@
           "output_per_1m": 1.5,
           "source": "https://mistral.ai/pricing/api",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Mistral Medium 3.5",
@@ -318,7 +318,7 @@
           "output_per_1m": 7.5,
           "source": "https://mistral.ai/pricing/api",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Mistral Small 4",
@@ -326,7 +326,7 @@
           "output_per_1m": 0.6,
           "source": "https://mistral.ai/pricing/api",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "Codestral",
@@ -334,7 +334,7 @@
           "output_per_1m": 0.9,
           "source": "https://mistral.ai/pricing/api",
           "confidence": "official",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -348,7 +348,7 @@
           "source": "https://api-docs.deepseek.com/quick_start/pricing",
           "confidence": "official",
           "note": "Peak, cache-miss; off-peak is 50% of peak",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "deepseek-v4-flash",
@@ -357,7 +357,7 @@
           "source": "https://api-docs.deepseek.com/quick_start/pricing",
           "confidence": "official",
           "note": "Peak, cache-miss; off-peak is 50% of peak",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     },
@@ -371,7 +371,7 @@
           "source": "https://docs.x.ai/docs/models",
           "confidence": "official",
           "note": "<200k context; $4/$12 above",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "grok-4.5",
@@ -380,7 +380,7 @@
           "source": "https://docs.x.ai/docs/models",
           "confidence": "official",
           "note": "<200k context; $4/$12 above",
-          "delta_pct": null
+          "delta_pct": 0
         },
         {
           "model": "grok-4.3",
@@ -389,7 +389,7 @@
           "source": "https://docs.x.ai/docs/models",
           "confidence": "official",
           "note": "<200k context; $2.50/$5 above",
-          "delta_pct": null
+          "delta_pct": 0
         }
       ]
     }
