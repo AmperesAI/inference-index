@@ -37,6 +37,8 @@
   .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
   .asof{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .navlink{font-family:var(--mono);font-size:11px;color:var(--violet);border:1px solid #2a2140;background:#100b1c;border-radius:20px;padding:3px 10px;letter-spacing:1px}
+  .navlink:hover{text-decoration:none;border-color:var(--violet)}
 
   .tag{max-width:1180px;margin:0 auto;padding:0 20px 6px;color:var(--dim);font-size:15px}
   .tag b{color:var(--txt)}
@@ -100,6 +102,7 @@
 <header>
   <div class="logo">INFERENCE<span class="idx">·INDEX</span></div>
   <div class="live"><span class="dot"></span>LIVE</div>
+  <a class="navlink" href="agent-verify.html">AGENT·VERIFY →</a>
   <div class="asof" id="asof">as of —</div>
 </header>
 <p class="tag">Tokens are commodities. <b>Quality isn't.</b> The first index that prices LLM inference by <b>$/MQT</b> — dollars per million <i>quality-adjusted</i> tokens, scored by a 10-judge evaluation panel.</p>

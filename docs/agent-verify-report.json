@@ -1,0 +1,50 @@
+{
+  "sample": true,
+  "sample_note": "ILLUSTRATIVE SAMPLE — this report shows the output format only. Generate a real one in ~2 minutes with: python3 pipeline/agent_verify.py --tasks pipeline/agent_tasks.jsonl --model <baseline> --model <candidate> --judge <judge> (works against any OpenAI-compatible endpoint: OpenAI, Nebius Token Factory, Databricks serving, Together, Groq, vLLM).",
+  "generated_at": "2026-08-22T00:00:00Z",
+  "baseline": { "model": "frontier-baseline", "model_id": "your-current-agent-model", "endpoint": "any OpenAI-compatible endpoint" },
+  "judge_panel": ["judge-A", "judge-B", "judge-C"],
+  "task_count": 10,
+  "candidates": [
+    {
+      "model": "candidate-mid",
+      "model_id": "mid-tier swap candidate",
+      "endpoint": "—",
+      "tool_fidelity_pct": 100.0,
+      "arg_validity_pct": 100.0,
+      "schema_validity_pct": 100.0,
+      "refusal_pct": 0.0,
+      "equivalence_median": 4.5,
+      "equivalence_spread": "4–5",
+      "mean_latency_ms": 820,
+      "verdict": "CERTIFIED"
+    },
+    {
+      "model": "candidate-small",
+      "model_id": "small swap candidate",
+      "endpoint": "—",
+      "tool_fidelity_pct": 87.5,
+      "arg_validity_pct": 100.0,
+      "schema_validity_pct": 100.0,
+      "refusal_pct": 0.0,
+      "equivalence_median": 3.5,
+      "equivalence_spread": "2–5",
+      "mean_latency_ms": 410,
+      "verdict": "CAUTION"
+    },
+    {
+      "model": "candidate-tiny",
+      "model_id": "tiny swap candidate",
+      "endpoint": "—",
+      "tool_fidelity_pct": 62.5,
+      "arg_validity_pct": 80.0,
+      "schema_validity_pct": 50.0,
+      "refusal_pct": 10.0,
+      "equivalence_median": 2.0,
+      "equivalence_spread": "1–4",
+      "mean_latency_ms": 290,
+      "verdict": "FAIL"
+    }
+  ],
+  "methodology": "Behavioral equivalence vs baseline: deterministic checks (tool fidelity, arg validity, schema validity, refusals) + judge-panel equivalence (median + spread, never a single judge)."
+}

@@ -124,6 +124,33 @@ The index is the neutral instrument; the pilots are where it earns money.
 | **Buyer** | **Cursor** (AI coding, frontier-model spend) | Route coding traffic by $/MQT instead of raw price; panel-verified downshift pairs for code tasks |
 | **Open-model** | **Nebius** (AI Studio / Token Factory) | The flagship verified pair (Llama 70B→8B, QIX 88.5) runs on exactly the open models they serve — the index is their sales sheet |
 
+## 🤖 Agent Verify — certify the swap
+
+**Same agent. Different model. Different behavior.** Multi-model agent platforms swap the model under an agent constantly — cost, availability, routing — and the agent's behavior silently changes: different tools called, malformed arguments, broken JSON, softer answers. Nobody measures it before shipping.
+
+[**Agent Verify →**](https://amperesai.github.io/inference-index/agent-verify.html) runs one task suite across a baseline and N swap candidates on **any OpenAI-compatible endpoint** (OpenAI, Nebius Token Factory, Databricks serving endpoints, Together, Groq, vLLM) and scores five behavioral-equivalence dimensions:
+
+1. **Tool fidelity** — same tools called as the baseline, no phantom calls
+2. **Arg validity** — arguments parse and contain every required key
+3. **Schema validity** — JSON tasks return parseable, correctly-shaped objects
+4. **Non-refusal** — no refusals/empty outputs on benign tasks
+5. **Equivalence** — judge-panel score vs baseline, reported as **median + spread** (never a single judge — same rule as the index)
+
+Verdicts: `CERTIFIED` / `CAUTION` / `FAIL`. One command, zero dependencies:
+
+```bash
+python3 pipeline/agent_verify.py \
+  --tasks pipeline/agent_tasks.jsonl \
+  --model "baseline|https://api.openai.com/v1|gpt-5|OPENAI_API_KEY" \
+  --model "swap-1|https://api.tokenfactory.nebius.com/v1|meta-llama/Meta-Llama-3.1-8B-Instruct-fast|NEBIUS_API_KEY" \
+  --judge "judge-1|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.5-pro|GEMINI_API_KEY" \
+  --out docs/agent-verify-report.json
+```
+
+Ten agent-shaped tasks ship in [`pipeline/agent_tasks.jsonl`](pipeline/agent_tasks.jsonl) (tool calls, multi-arg bookings, JSON extraction, and a no-tool distractor that catches over-eager tool callers). Replace them with your own agent's traces for a fleet-specific certification. The checked-in [report](docs/agent-verify-report.json) is a **clearly-labeled sample** showing the output format — generate a real one against your fleet in ~2 minutes.
+
+**The one-two punch:** the index prices the market; Agent Verify certifies the swap. Both run on the same panel methodology.
+
 ## ⚡ Sponsor stack
 
 | Tool | Role | Where |
@@ -151,6 +178,7 @@ python3 -m http.server -d docs 8080
 
 - [x] Live scraped market table (11 providers)
 - [x] First panel-verified route pair (Llama-3.1-70B → 8B, 10 judges)
+- [x] Agent Verify v1 — swap certification CLI + report (5 behavioral dimensions)
 - [ ] Panel runs for the top-10 downshift pairs (GPT-5 → GPT-5-mini, Claude Sonnet → Haiku, DeepSeek-V3 → R1-distill)
 - [ ] Per-task-type $/MQT (coding vs. extraction vs. summarization)
 - [ ] Provider status overlay (Apify status-page stream)

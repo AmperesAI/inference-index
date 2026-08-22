@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Verify — certify model swaps for AI agents · Inference Index</title>
+<meta name="description" content="Same agent, different model, different behavior. Agent Verify runs your agent task suite across candidate models and certifies swaps: tool fidelity, schema validity, and judge-panel equivalence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07090c; --panel:#0d1117; --panel2:#11161d; --line:#1d2530;
+    --txt:#dbe4ee; --dim:#7c8b9d; --faint:#4a5765;
+    --green:#3ddc84; --red:#ff5d5d; --amber:#ffc24b; --cyan:#4dd0e1; --violet:#b18cff;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5}
+  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  .mono{font-family:var(--mono)}
+  header{max-width:1180px;margin:0 auto;padding:34px 20px 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:14px}
+  .logo{font-family:var(--mono);font-weight:600;font-size:26px;letter-spacing:.5px}
+  .logo .idx{color:var(--violet)}
+  .back{margin-left:auto;font-family:var(--mono);font-size:12px}
+  .tag{max-width:1180px;margin:0 auto;padding:0 20px 6px;color:var(--dim);font-size:16px}
+  .tag b{color:var(--txt)}
+  section{max-width:1180px;margin:26px auto;padding:0 20px}
+  h2{font-size:15px;font-family:var(--mono);letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  .card p{color:var(--dim);font-size:13.5px}
+  .samplebanner{max-width:1180px;margin:18px auto 0;padding:0 20px}
+  .samplebanner .inner{border:1px dashed var(--amber);background:#181305;border-radius:10px;padding:12px 16px;color:#e8d5a0;font-size:13px;font-family:var(--mono)}
+  .dims{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .dim{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .dim .n{font-family:var(--mono);font-size:12px;color:var(--violet);letter-spacing:1px}
+  .dim .d{font-size:12.5px;color:var(--dim);margin-top:6px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:880px}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);text-align:right;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child{text-align:left}
+  td{padding:11px 14px;border-bottom:1px solid #131a23;text-align:right;font-family:var(--mono);white-space:nowrap}
+  td:first-child{text-align:left}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--panel2)}
+  .model{color:var(--txt);font-weight:500}
+  .sub{color:var(--faint);font-size:11px;display:block}
+  .v{font-size:10px;letter-spacing:1px;border-radius:4px;padding:3px 8px;font-weight:700}
+  .v.CERTIFIED{color:#04110a;background:var(--green)}
+  .v.CAUTION{color:#221a04;background:var(--amber)}
+  .v.FAIL{color:#fff;background:var(--red)}
+  .good{color:var(--green)} .warn{color:var(--amber)} .bad{color:var(--red)}
+  .spread{color:var(--faint);font-size:11px}
+  pre{background:#0a0f14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;color:var(--dim);line-height:1.6}
+  pre b{color:var(--txt)}
+  .why{border-left:3px solid var(--violet);background:#100b1c;border-radius:6px;padding:12px 14px;margin-top:14px;color:#cfc2ef;font-size:13.5px}
+  footer{border-top:1px solid var(--line);margin-top:44px;padding:26px 20px 40px;text-align:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">AGENT<span class="idx">·VERIFY</span></div>
+  <div class="back"><a href="index.html">← INFERENCE·INDEX</a></div>
+</header>
+<p class="tag"><b>Same agent. Different model. Different behavior.</b> Agent platforms swap models constantly — for cost, availability, routing. Agent Verify runs your agent's task suite across candidate models and <b>certifies the swap</b> before your users find out the hard way.</p>
+
+<div class="samplebanner" id="samplebanner" style="display:none"><div class="inner">⚠ SAMPLE REPORT — illustrative format only, not measured data. Generate a real report in ~2 minutes: <b>python3 pipeline/agent_verify.py</b> against your own endpoints (OpenAI, Nebius Token Factory, Databricks serving, Together, Groq, vLLM — anything OpenAI-compatible).</div></div>
+
+<section>
+  <h2>The five dimensions</h2>
+  <div class="dims">
+    <div class="dim"><div class="n">1 · TOOL FIDELITY</div><div class="d">Does the candidate call the same tools the baseline called — and no phantom ones?</div></div>
+    <div class="dim"><div class="n">2 · ARG VALIDITY</div><div class="d">Do tool arguments parse and contain every required key?</div></div>
+    <div class="dim"><div class="n">3 · SCHEMA VALIDITY</div><div class="d">Do JSON-output tasks return parseable, correctly-shaped objects?</div></div>
+    <div class="dim"><div class="n">4 · NON-REFUSAL</div><div class="d">No refusals or empty outputs on benign tasks.</div></div>
+    <div class="dim"><div class="n">5 · EQUIVALENCE (PANEL)</div><div class="d">Judge panel scores candidate vs baseline 1–5 — reported as median + spread, never one judge.</div></div>
+  </div>
+  <div class="why">Why a panel? The <a href="index.html">Inference Index</a> research showed 10 judges scored the <i>identical</i> outputs anywhere from 61% to 97% preserved. One judge is an anecdote. A panel with a disclosed spread is a measurement.</div>
+</section>
+
+<section>
+  <h2>Swap certification report</h2>
+  <div class="tblwrap">
+    <table>
+      <thead><tr>
+        <th>Candidate</th><th>Tool fidelity</th><th>Arg validity</th><th>Schema validity</th>
+        <th>Refusals</th><th>Equivalence (panel)</th><th>Latency</th><th>Verdict</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="8" style="text-align:center;color:var(--faint)">loading report…</td></tr></tbody>
+    </table>
+  </div>
+  <p style="color:var(--faint);font-size:12px;margin-top:8px" id="meta"></p>
+</section>
+
+<section>
+  <h2>Run it against your fleet</h2>
+  <div class="card">
+    <p style="margin-bottom:10px">One command. First <span class="mono">--model</span> is your baseline, the rest are swap candidates. Works with any OpenAI-compatible endpoint — which is exactly what multi-model agent platforms (Databricks serving endpoints, Nebius Token Factory, OpenAI, Groq, vLLM) already speak.</p>
+<pre>python3 pipeline/agent_verify.py \
+  --tasks pipeline/agent_tasks.jsonl \
+  --model <b>"baseline|https://api.openai.com/v1|gpt-5|OPENAI_API_KEY"</b> \
+  --model <b>"swap-1|https://api.tokenfactory.nebius.com/v1|meta-llama/Meta-Llama-3.1-8B-Instruct-fast|NEBIUS_API_KEY"</b> \
+  --judge <b>"judge-1|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.5-pro|GEMINI_API_KEY"</b> \
+  --out docs/agent-verify-report.json</pre>
+    <p style="margin-top:10px">Ten agent-shaped tasks ship in <span class="mono">pipeline/agent_tasks.jsonl</span> (tool calls, multi-arg bookings, JSON extraction, a no-tool distractor that catches over-eager tool callers). Replace them with traces from your own agent for a fleet-specific certification.</p>
+  </div>
+</section>
+
+<footer>
+  <a href="https://github.com/AmperesAI/inference-index">github.com/AmperesAI/inference-index</a> · Agent Verify is part of the Inference Index
+  <div style="margin-top:8px;color:var(--dim)">the index prices the market · agent verify certifies the swap · same panel methodology</div>
+</footer>
+
+<script>
+const pctCell=(v,invert)=>{
+  if(v==null)return '<span class="spread">—</span>';
+  const good=invert? v<=0 : v>=95, warn=invert? v<=10 : v>=80;
+  return `<span class="${good?'good':warn?'warn':'bad'}">${v}%</span>`;
+};
+fetch('agent-verify-report.json').then(r=>r.json()).then(d=>{
+  if(d.sample)document.getElementById('samplebanner').style.display='block';
+  document.getElementById('rows').innerHTML=d.candidates.map(c=>`<tr>
+    <td class="model">${c.model}${d.sample?' <span class="spread">(sample)</span>':''}<span class="sub">${c.model_id}</span></td>
+    <td>${pctCell(c.tool_fidelity_pct)}</td>
+    <td>${pctCell(c.arg_validity_pct)}</td>
+    <td>${pctCell(c.schema_validity_pct)}</td>
+    <td>${pctCell(c.refusal_pct,true)}</td>
+    <td>${c.equivalence_median!=null?`<b>${c.equivalence_median}/5</b> <span class="spread">(${c.equivalence_spread})</span>`:'<span class="spread">—</span>'}</td>
+    <td>${c.mean_latency_ms!=null?c.mean_latency_ms+'ms':'—'}</td>
+    <td><span class="v ${c.verdict}">${c.verdict}</span></td>
+  </tr>`).join('');
+  document.getElementById('meta').textContent=
+    `baseline: ${d.baseline.model} · ${d.task_count} tasks · judge panel: ${d.judge_panel.join(', ')} · generated ${d.generated_at}`+(d.sample?' · SAMPLE DATA':'');
+}).catch(()=>{document.getElementById('rows').innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--red)">report not found</td></tr>'});
+</script>
+</body>
+</html>
