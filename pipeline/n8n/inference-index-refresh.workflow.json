@@ -2,33 +2,63 @@
   "name": "Inference Index — 6h refresh",
   "nodes": [
     {
-      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 6 }] } },
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
       "name": "Every 6 hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ],
+      "id": "iir-node-01"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://api.apify.com/v2/acts/apify~website-content-crawler/run-sync-get-dataset-items",
         "sendQuery": true,
-        "queryParameters": { "parameters": [{ "name": "token", "value": "={{ $env.APIFY_TOKEN }}" }] },
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "PASTE contents of pipeline/apify/pricing-scraper.input.json here (drop the _-prefixed keys)",
-        "options": { "timeout": 300000 }
+        "options": {
+          "timeout": 300000
+        }
       },
       "name": "Apify: crawl pricing pages",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [220, 0],
+      "position": [
+        220,
+        0
+      ],
       "notesInFlow": true,
-      "notes": "Body: paste contents of pipeline/apify/pricing-scraper.input.json (minus _-prefixed keys)."
+      "notes": "Body: paste contents of pipeline/apify/pricing-scraper.input.json (minus _-prefixed keys).",
+      "id": "iir-node-02"
     },
     {
       "parameters": {
-        "modelId": { "__rl": true, "value": "gpt-5-mini", "mode": "list" },
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list"
+        },
         "messages": {
           "values": [
             {
@@ -41,7 +71,11 @@
       "name": "LLM: extract price table",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
-      "position": [440, 0]
+      "position": [
+        440,
+        0
+      ],
+      "id": "iir-node-03"
     },
     {
       "parameters": {
@@ -51,7 +85,11 @@
       "name": "Fetch current index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [440, 180]
+      "position": [
+        440,
+        180
+      ],
+      "id": "iir-node-04"
     },
     {
       "parameters": {
@@ -60,17 +98,29 @@
       "name": "Diff vs live index",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [660, 90]
+      "position": [
+        660,
+        90
+      ],
+      "id": "iir-node-05"
     },
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": true, "typeValidation": "strict", "version": 2 },
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
           "conditions": [
             {
               "leftValue": "={{ $json.changed }}",
               "rightValue": true,
-              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
             }
           ],
           "combinator": "and"
@@ -79,7 +129,11 @@
       "name": "Price moved?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [880, 90]
+      "position": [
+        880,
+        90
+      ],
+      "id": "iir-node-06"
     },
     {
       "parameters": {
@@ -92,7 +146,11 @@
       "name": "Alert: Slack market move",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1100, 0]
+      "position": [
+        1100,
+        0
+      ],
+      "id": "iir-node-07"
     },
     {
       "parameters": {
@@ -107,20 +165,107 @@
       "name": "GitHub: repository_dispatch",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1100, 180],
+      "position": [
+        1100,
+        180
+      ],
       "notesInFlow": true,
-      "notes": "Header credential: Authorization: Bearer <GitHub PAT with repo scope>. Triggers .github/workflows/refresh.yml → recompute → site redeploy."
+      "notes": "Header credential: Authorization: Bearer <GitHub PAT with repo scope>. Triggers .github/workflows/refresh.yml → recompute → site redeploy.",
+      "id": "iir-node-08"
     }
   ],
   "connections": {
-    "Every 6 hours": { "main": [[{ "node": "Apify: crawl pricing pages", "type": "main", "index": 0 }, { "node": "Fetch current index", "type": "main", "index": 0 }]] },
-    "Apify: crawl pricing pages": { "main": [[{ "node": "LLM: extract price table", "type": "main", "index": 0 }]] },
-    "LLM: extract price table": { "main": [[{ "node": "Diff vs live index", "type": "main", "index": 0 }]] },
-    "Fetch current index": { "main": [[{ "node": "Diff vs live index", "type": "main", "index": 0 }]] },
-    "Diff vs live index": { "main": [[{ "node": "Price moved?", "type": "main", "index": 0 }]] },
-    "Price moved?": { "main": [[{ "node": "Alert: Slack market move", "type": "main", "index": 0 }, { "node": "GitHub: repository_dispatch", "type": "main", "index": 0 }], [{ "node": "GitHub: repository_dispatch", "type": "main", "index": 0 }]] }
+    "Every 6 hours": {
+      "main": [
+        [
+          {
+            "node": "Apify: crawl pricing pages",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch current index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apify: crawl pricing pages": {
+      "main": [
+        [
+          {
+            "node": "LLM: extract price table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM: extract price table": {
+      "main": [
+        [
+          {
+            "node": "Diff vs live index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch current index": {
+      "main": [
+        [
+          {
+            "node": "Diff vs live index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Diff vs live index": {
+      "main": [
+        [
+          {
+            "node": "Price moved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Price moved?": {
+      "main": [
+        [
+          {
+            "node": "Alert: Slack market move",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GitHub: repository_dispatch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GitHub: repository_dispatch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "pinData": {},
-  "meta": { "templateCredsSetupCompleted": false }
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "InferenceIndexRefresh",
+  "active": false
 }
