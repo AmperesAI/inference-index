@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use the Inference Index or Agent Verify, please cite it as below."
+title: "Inference Index: a price-per-quality index for LLM inference"
+authors:
+  - family-names: "V"
+    given-names: "NarasingaMoorthy"
+  - family-names: "Guhathakurta"
+    given-names: "Pranav"
+repository-code: "https://github.com/AmperesAI/inference-index"
+url: "https://amperesai.github.io/inference-index/"
+license: MIT
+date-released: "2026-08-22"
+keywords:
+  - LLM inference
+  - model routing
+  - LLM-as-judge
+  - price index
+  - agent evaluation
+notes: >
+  Quality-adjustment methodology (10-independent-judge panel, preservation
+  reported as median plus full spread) from the Amperes routing research,
+  under review at TMLR (2026).

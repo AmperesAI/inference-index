@@ -1,0 +1,17 @@
+name: "💲 Price correction"
+description: "A price in the index is wrong or stale"
+title: "[price] <model> on <provider>"
+labels: ["data", "price-correction"]
+body:
+  - type: input
+    id: model
+    attributes: { label: "Model + provider", placeholder: "gpt-5.6-luna · OpenAI" }
+    validations: { required: true }
+  - type: input
+    id: correct
+    attributes: { label: "Correct price ($/1M input · $/1M output)", placeholder: "0.20 · 1.20" }
+    validations: { required: true }
+  - type: input
+    id: source
+    attributes: { label: "Official source URL (required — we only publish linkable prices)" }
+    validations: { required: true }

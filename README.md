@@ -11,6 +11,14 @@ Every pricing page tells you what a million tokens costs. None of them tell you 
 
 [![ci](https://github.com/AmperesAI/inference-index/actions/workflows/ci.yml/badge.svg)](https://github.com/AmperesAI/inference-index/actions/workflows/ci.yml) ![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-official_sources_linked-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
+<br>
+
+<a href="https://amperesai.github.io/inference-index/agent-verify.html?demo"><img src="docs/assets/mission-control.png" alt="Agent Verify Mission Control — three swap candidates racing through the task suite to CERTIFIED / CAUTION / FAIL verdicts" width="920"></a>
+
+| [<img src="docs/assets/index.png" alt="Live market index" width="290">](https://amperesai.github.io/inference-index/) | [<img src="docs/assets/console.png" alt="Pilot Console" width="290">](https://amperesai.github.io/inference-index/console.html) | [<img src="docs/assets/deck.png" alt="Pitch deck" width="290">](https://amperesai.github.io/inference-index/deck.html) |
+|:--:|:--:|:--:|
+| **Live Index** | **Pilot Console** | **Pitch Deck** |
+
 </div>
 
 ---

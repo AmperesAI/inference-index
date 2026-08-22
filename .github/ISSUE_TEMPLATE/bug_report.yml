@@ -1,0 +1,14 @@
+name: "🐛 Bug report"
+description: "Something broken in the site, CLI, or pipeline"
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: "Where"
+      options: ["Index site", "Agent Verify page / demo", "Pilot Console", "agent_verify.py CLI", "mock_fleet.py", "Apify/n8n pipeline", "CI / refresh workflow"]
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes: { label: "What happened / expected", description: "For CLI bugs include the exact command; `python3 pipeline/mock_fleet.py --selftest` output helps." }
+    validations: { required: true }
