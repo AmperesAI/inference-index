@@ -11,7 +11,7 @@
     --green:#30d158;--red:#ff453a;--amber:#ffd60a;--blue:#8ab4ff;--violet:#b18cff;
     --cond:'Barlow Condensed',sans-serif;--sans:'Barlow',sans-serif;--mono:'IBM Plex Mono',monospace}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:var(--sans)}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .slide{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
     padding:70px min(9vw,110px);border-bottom:1px solid var(--line);position:relative}
   .num{position:absolute;top:28px;right:36px;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:2px}
@@ -49,7 +49,7 @@
   <h1>Agent<br>Verify</h1>
   <p class="big" style="margin-top:22px"><b>Same agent. Different model. Different behavior.</b><br>
   The certification layer for model swaps — built on the Inference Index, the live price-per-quality index for LLM inference.</p>
-  <p class="big mono" style="margin-top:26px;font-size:15px">NarasingaMoorthy V · Pranav Guhathakurta &nbsp;·&nbsp; <span class="url">amperesai.github.io/inference-index</span></p>
+  <p class="big mono" style="margin-top:26px;font-size:15px">NarasingaMoorthy V · Pranav Guhathakurta &nbsp;·&nbsp; <a class="url" href="https://amperesai.github.io/inference-index" target="_blank" rel="noopener">amperesai.github.io/inference-index</a></p>
   <div class="foot">LIVE PRODUCT · REAL CODE · RESEARCH UNDER REVIEW AT TMLR</div>
 </div>
 
@@ -85,9 +85,10 @@
   <p class="big">Run your agent's task suite across a baseline and N swap candidates on <b>any OpenAI-compatible endpoint</b>. Five behavioral dimensions. One verdict: <b class="g">CERTIFIED</b> / <b class="a">CAUTION</b> / <b class="r">FAIL</b>.</p>
   <ul class="pts">
     <li><b>Tool fidelity</b> — same tools as baseline, no phantom calls (a distractor task catches over-callers)</li>
-    <li><b>Arg + schema validity</b> — arguments parse, JSON outputs hold shape</li>
+    <li><b>Arg + schema validity</b> — arguments parse, JSON outputs hold shape (dimensions 2 &amp; 3)</li>
+    <li><b>Non-refusal</b> — no refusals or empty outputs on benign tasks</li>
     <li><b>Panel equivalence</b> — judge panel, median + spread, never one judge</li>
-    <li><b>CI-ready</b> — single stdlib Python file, exits non-zero on FAIL, ~5 min per run</li>
+    <li><b>CI-ready</b> — a property, not a dimension: stdlib Python, exits non-zero on FAIL, ~2–5 min per run</li>
   </ul>
 </div>
 
@@ -122,9 +123,9 @@
   <h2>Mission Control</h2>
   <p class="big">Live on stage: three swap candidates race through the task suite — every tool call, argument, and schema check on screen — then the verdict stamps land. Simulation clearly labeled; the identical console renders your fleet's real run from one CLI command.</p>
   <ul class="pts">
-    <li>Demo: <span class="url">amperesai.github.io/inference-index/agent-verify.html?demo</span></li>
-    <li>Index: <span class="url">amperesai.github.io/inference-index</span></li>
-    <li>Code: <span class="url">github.com/AmperesAI/inference-index</span></li>
+    <li>Demo: <a class="url" href="https://amperesai.github.io/inference-index/agent-verify.html?demo" target="_blank" rel="noopener">amperesai.github.io/inference-index/agent-verify.html?demo</a></li>
+    <li>Index: <a class="url" href="https://amperesai.github.io/inference-index" target="_blank" rel="noopener">amperesai.github.io/inference-index</a></li>
+    <li>Code: <a class="url" href="https://github.com/AmperesAI/inference-index" target="_blank" rel="noopener">github.com/AmperesAI/inference-index</a></li>
   </ul>
 </div>
 
@@ -147,7 +148,7 @@
   <h2>The moat is the panel</h2>
   <ul class="pts">
     <li><b>Anyone can scrape prices.</b> Only a team with eval infrastructure can keep producing panel-verified quality — that's the data asset that compounds.</li>
-    <li><b>Working control plane behind it:</b> Amperes — OpenAI-compatible proxy, multi-objective routing, confidence-gated escalation, governance, 450+ tests.</li>
+    <li><b>Working control plane behind it:</b> Amperes — OpenAI-compatible proxy, multi-objective routing, confidence-gated escalation, governance, 400+ tests.</li>
     <li><b>Research-grade credibility:</b> 10-judge methodology, 11.4K-prompt eval, under review at TMLR — and we disclose the judge spread instead of hiding it.</li>
     <li><b>Two technical founders:</b> inference/data infra (Moorthy) + production routing &amp; SOC2-grade compliance at Flagright, Wharton/UPenn (Pranav).</li>
   </ul>
@@ -163,16 +164,22 @@
     <div class="cell"><div class="v b">OPEN</div><div class="l">github.com/AmperesAI/inference-index</div></div>
     <div class="cell"><div class="v vi">3</div><div class="l">design partner slots</div></div>
   </div>
-  <p class="big mono" style="margin-top:26px;font-size:15px">Amperes — the AI inference control plane · <span class="url">amperes.pro</span></p>
+  <p class="big mono" style="margin-top:26px;font-size:15px">Amperes — the AI inference control plane · <a class="url" href="https://amperes.pro" target="_blank" rel="noopener">amperes.pro</a></p>
 </div>
 
 <div class="nav">→ / ← OR CLICK TO ADVANCE · CMD+P FOR PDF</div>
 <script>
 const slides=[...document.querySelectorAll('.slide')];let cur=0;
 function go(n){cur=Math.max(0,Math.min(slides.length-1,n));slides[cur].scrollIntoView({behavior:'smooth'});}
-addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
-  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);});
-addEventListener('click',e=>{if(!e.target.closest('a'))go(cur+1);});
+const NEXT=['ArrowRight','PageDown',' ','ArrowDown'],PREV=['ArrowLeft','PageUp','ArrowUp'];
+addEventListener('keydown',e=>{
+  if(NEXT.includes(e.key)){e.preventDefault();go(cur+1);}
+  else if(PREV.includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==='Home'){e.preventDefault();go(0);}
+  else if(e.key==='End'){e.preventDefault();go(slides.length-1);}});
+addEventListener('click',e=>{if(!e.target.closest('a')&&!String(getSelection()).length)go(cur+1);});
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting)cur=slides.indexOf(x.target);}),{threshold:.55});
+slides.forEach(s=>io.observe(s));
 </script>
 </body>
 </html>

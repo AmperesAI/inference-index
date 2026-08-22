@@ -280,7 +280,7 @@ python3 pipeline/agent_verify.py \
   --judge <b>"judge-2|https://api.tokenfactory.nebius.com/v1|Qwen/Qwen3-235B-A22B-Instruct-2507|NEBIUS_API_KEY"</b> \
   --judge <b>"judge-3|https://api.mistral.ai/v1|mistral-large-3|MISTRAL_API_KEY"</b> \
   --out docs/agent-verify-report.json</pre>
-  <p style="font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:10px;letter-spacing:.5px">Single stdlib-only Python file — no pip install. A 2-candidate, 3-judge run ≈ 100 small API calls, a few dollars, ~5 minutes. Repeat --judge to grow the panel; verdicts always report median + spread.</p>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:10px;letter-spacing:.5px">Single stdlib-only Python file — no pip install. A 2-candidate, 3-judge run ≈ 100 small API calls, a few dollars, ~2–5 minutes. Repeat --judge to grow the panel; verdicts always report median + spread.</p>
   <p class="lead" style="margin-top:22px">Ten agent-shaped tasks ship in the suite — tool calls, multi-arg bookings, JSON extraction, a no-tool distractor. One JSONL line per task; your existing tool schemas paste straight in:</p>
 <pre>{"id":"weather-tool","user":"What's the weather in San Francisco right now?",
  "tools":[{"type":"function","function":{"name":"get_weather","description":"Get current weather for a city",

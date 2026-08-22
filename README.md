@@ -9,7 +9,7 @@ Every pricing page tells you what a million tokens costs. None of them tell you 
 
 [**Live Index →**](https://amperesai.github.io/inference-index/) · [Methodology](#-methodology-quality-adjusted-pricing) · [Architecture](#-architecture) · [Pilot Tracks](#-pilot-tracks)
 
-![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-official_sources_linked-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
+[![ci](https://github.com/AmperesAI/inference-index/actions/workflows/ci.yml/badge.svg)](https://github.com/AmperesAI/inference-index/actions/workflows/ci.yml) ![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-official_sources_linked-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
 </div>
 
@@ -153,7 +153,7 @@ python3 pipeline/agent_verify.py \
 
 The CLI exits non-zero when any candidate FAILs — drop it in CI ahead of every routing change. Repeat `--judge` to grow the panel; verdicts always report median + spread.
 
-Ten agent-shaped tasks ship in [`pipeline/agent_tasks.jsonl`](pipeline/agent_tasks.jsonl) (tool calls, multi-arg bookings, JSON extraction, and a no-tool distractor that catches over-eager tool callers). Replace them with your own agent's traces for a fleet-specific certification. The checked-in [report](docs/agent-verify-report.json) is a **clearly-labeled sample** showing the output format — generate a real one against your fleet in ~2 minutes.
+Ten agent-shaped tasks ship in [`pipeline/agent_tasks.jsonl`](pipeline/agent_tasks.jsonl) (tool calls, multi-arg bookings, JSON extraction, and a no-tool distractor that catches over-eager tool callers). Replace them with your own agent's traces for a fleet-specific certification. The checked-in [report](docs/agent-verify-report.json) is a **clearly-labeled sample** showing the output format — generate a real one against your fleet in ~2-5 minutes.
 
 **The one-two punch:** the index prices the market; Agent Verify certifies the swap. Both run on the same panel methodology.
 
@@ -163,7 +163,7 @@ Ten agent-shaped tasks ship in [`pipeline/agent_tasks.jsonl`](pipeline/agent_tas
 |---|---|---|
 | **Apify** | Scrapes 11 official pricing pages + status pages on schedule | [`pipeline/apify/`](pipeline/apify/) — ready-to-run actor inputs |
 | **n8n** | The nervous system: schedule → scrape → extract → diff → alert → dispatch | [`pipeline/n8n/`](pipeline/n8n/) — importable workflow JSON |
-| **Bolt** | Pilot Console: paste a workload, get a per-workload $/MQT savings simulation | [`bolt/`](bolt/) — one-paste build prompt |
+| **Bolt** | Pilot Console: paste a workload, get a per-workload $/MQT savings simulation | [**Live console**](https://amperesai.github.io/inference-index/console.html) · rebuild it via the [`bolt/`](bolt/) one-paste prompt |
 
 ## 🚀 Quickstart
 
@@ -173,6 +173,10 @@ cd inference-index
 
 # rebuild the index locally from the latest scraped prices
 python3 pipeline/compute_index.py
+
+# zero-key end-to-end selftest: runs Agent Verify against a mock fleet,
+# asserts CERTIFIED/CAUTION/FAIL verdicts + the non-zero CI exit gate
+python3 pipeline/mock_fleet.py --selftest
 
 # serve the site
 python3 -m http.server -d docs 8080

@@ -1,9 +1,17 @@
 {
   "sample": true,
-  "sample_note": "ILLUSTRATIVE SAMPLE — this report shows the output format only. Generate a real one in ~2 minutes with: python3 pipeline/agent_verify.py --tasks pipeline/agent_tasks.jsonl --model <baseline> --model <candidate> --judge <judge> (works against any OpenAI-compatible endpoint: OpenAI, Nebius Token Factory, Databricks serving, Together, Groq, vLLM).",
+  "sample_note": "ILLUSTRATIVE SAMPLE — this report shows the output format only. Generate a real one in ~2–5 minutes with: python3 pipeline/agent_verify.py --tasks pipeline/agent_tasks.jsonl --model <baseline> --model <candidate> --judge <judge> (works against any OpenAI-compatible endpoint: OpenAI, Nebius Token Factory, Databricks serving, Together, Groq, vLLM).",
   "generated_at": "2026-08-22T00:00:00Z",
-  "baseline": { "model": "frontier-baseline", "model_id": "your-current-agent-model", "endpoint": "any OpenAI-compatible endpoint" },
-  "judge_panel": ["judge-A", "judge-B", "judge-C"],
+  "baseline": {
+    "model": "frontier-baseline",
+    "model_id": "your-current-agent-model",
+    "endpoint": "any OpenAI-compatible endpoint"
+  },
+  "judge_panel": [
+    "judge-A",
+    "judge-B",
+    "judge-C"
+  ],
   "task_count": 10,
   "candidates": [
     {

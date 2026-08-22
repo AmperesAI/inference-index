@@ -96,24 +96,28 @@
 <script>
 let D=null, rows=[];
 const $=id=>document.getElementById(id);
-const money=v=>'$'+(v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0));
+const money=v=>{const s=v<0?'-':'';v=Math.abs(v);
+  if(v>=999500)return s+'$'+(v/1e6).toFixed(2)+'M';
+  if(v>=999.5)return s+'$'+(v/1e3).toFixed(1)+'K';
+  return s+'$'+v.toFixed(v<10?2:0);};
 
 fetch('data.json').then(r=>r.json()).then(d=>{
   D=d;
   rows=d.providers.flatMap(p=>p.models.filter(m=>!m.units).map(m=>({...m,provider:p.provider})));
   rows.sort((a,b)=>(3*b.input_per_1m+b.output_per_1m)-(3*a.input_per_1m+a.output_per_1m));
   $('asof').textContent='as of '+d.as_of+' · '+rows.length+' models';
-  const opt=m=>`<option value="${m.model}|${m.provider}">${m.model} · ${m.provider}</option>`;
+  /* option values are row indices — immune to delimiter/escaping issues in scraped names */
+  const opt=(m,i)=>{const o=new Option(m.model+' · '+m.provider,String(i));return o.outerHTML;};
   $('cur').innerHTML=rows.map(opt).join('');
   $('cand').innerHTML=rows.map(opt).join('');
-  const strong=rows.find(m=>/70b/i.test(m.model))||rows[0];
-  const cheap=rows.find(m=>/3\.1-8b/i.test(m.model))||rows[rows.length-1];
-  $('cur').value=strong.model+'|'+strong.provider;
-  $('cand').value=cheap.model+'|'+cheap.provider;
+  let strongIdx=-1;rows.forEach((m,i)=>{if(/70b/i.test(m.model))strongIdx=i;}); /* last match = cheapest 70B (desc sort) */
+  let cheapIdx=rows.findIndex(m=>/3\.1-8b/i.test(m.model));
+  $('cur').value=String(strongIdx>=0?strongIdx:0);
+  $('cand').value=String(cheapIdx>=0?cheapIdx:rows.length-1);
   sim();
 }).catch(()=>{$('asof').textContent='index data unavailable — retry';});
 
-function find(sel){const [m,p]=$(sel).value.split('|');return rows.find(r=>r.model===m&&r.provider===p);}
+function find(sel){return rows[+$(sel).value];}
 function costPerM(m,outShare){return (1-outShare)*m.input_per_1m+outShare*m.output_per_1m;}
 
 function sim(){
@@ -127,20 +131,35 @@ function sim(){
   $('curCost').textContent=money(cc);
   $('candCost').textContent=money(dc);
   $('rawSav').textContent=Math.round(sav*100)+'%';
-  const pair=(D.verified_pairs||[]).find(v=>v.cheap_model===cand.model);
+  $('rawSav').className='v '+(sav>=0?'g':'r');
+  /* VERIFIED only when the panel scored THIS exact baseline->candidate pair */
+  const pairs=D.verified_pairs||[];
+  const pair=pairs.find(v=>v.cheap_model===cand.model&&v.baseline_model===cur.model);
+  const cheapOnly=pair?null:pairs.find(v=>v.cheap_model===cand.model);
   if(pair){
     const q=Math.round(sav*100*pair.preservation_median*10)/10;
     $('qix').textContent=q; $('qix').className='v g';
     $('vbadge').innerHTML='<span class="badge v">VERIFIED PAIR</span>';
     $('pairNote').textContent=`Panel: ${Math.round(pair.preservation_median*100)}% median preservation (${pair.preservation_spread}). QIX = raw savings × panel median.`;
     $('annualQ').textContent='quality-preserved (QIX-adjusted): '+money(cc*sav*pair.preservation_median*12)+'/yr';
+  }else if(cheapOnly){
+    $('qix').textContent='pending'; $('qix').className='v a';
+    $('vbadge').innerHTML='<span class="badge p">CANDIDATE PANEL-SCORED*</span>';
+    $('pairNote').textContent=`* The panel scored ${cand.model} against ${cheapOnly.baseline_model} (${Math.round(cheapOnly.preservation_median*100)}% median, ${cheapOnly.preservation_spread}) — not against your selected baseline. Your exact pair is unscored: run Agent Verify to certify it.`;
+    $('annualQ').textContent='quality adjustment pending a panel run for this exact pair';
   }else{
     $('qix').textContent='pending'; $('qix').className='v a';
     $('vbadge').innerHTML='<span class="badge p">PANEL PENDING</span>';
     $('pairNote').textContent='This pair has not been panel-scored — raw savings only, quality unverified. Run Agent Verify to certify it.';
     $('annualQ').textContent='quality adjustment pending panel run';
   }
-  $('annual').textContent=money(Math.max(0,(cc-dc))*12);
+  if(sav>=0){
+    $('annual').textContent=money((cc-dc)*12);
+    $('annual').style.color='';
+  }else{
+    $('annual').textContent='+'+money((dc-cc)*12)+' /yr cost increase';
+    $('annual').style.color='var(--red)';
+  }
 }
 ['vol','outshare','cur','cand'].forEach(id=>$(id).addEventListener('input',sim));
 </script>
