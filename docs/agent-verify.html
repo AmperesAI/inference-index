@@ -81,7 +81,11 @@
     font-family:var(--mono);font-size:10.5px;letter-spacing:2px;padding:6px 14px;border-radius:2px}
   .cbtn:hover{border-color:#fff}
   .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
-  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}.gauge svg{width:44px;height:44px}}
+  @media(max-width:640px){
+    nav{flex-wrap:wrap;gap:8px;padding:10px 16px}
+    nav .links{gap:12px;font-size:10px;letter-spacing:1px;flex-wrap:wrap;margin-left:0}
+  }
   .col{background:#05070a;padding:18px 16px 22px;position:relative;min-height:540px}
   .col .cname{font-family:var(--cond);font-weight:700;font-size:24px;letter-spacing:1px;text-transform:uppercase}
   .col .cid{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-bottom:14px;letter-spacing:.5px}
@@ -193,11 +197,11 @@
 <section class="reveal">
   <div class="kicker">The Problem</div>
   <h2>Swaps ship blind</h2>
-  <p class="lead">Multi-model agent platforms re-route the model beneath an agent every day. The prompt is identical — the <b>behavior is not</b>: different tools called, malformed arguments, broken JSON, silent refusals. And the research is clear on why nobody catches it:</p>
+  <p class="lead">Multi-model agent platforms re-route the model beneath an agent every day. The prompt is identical — the <b>behavior is not</b>: different tools called, malformed arguments, broken JSON, silent refusals. And the research is clear on why single-judge spot-checks don't catch it:</p>
   <div class="stats">
-    <div class="stat"><div class="v r">0</div><div class="l">standard tests run before a fleet model swap today</div></div>
     <div class="stat"><div class="v a">61–97%</div><div class="l">quality-preservation range across 10 judges on identical outputs</div></div>
-    <div class="stat"><div class="v b">10</div><div class="l">judges in our panel — a single judge is an anecdote</div></div>
+    <div class="stat"><div class="v b">10</div><div class="l">judges validated the methodology — Inference Index research</div></div>
+    <div class="stat"><div class="v r">0</div><div class="l">standard, portable pre-swap certification today — every team hand-rolls its own</div></div>
     <div class="stat"><div class="v g">5</div><div class="l">behavioral dimensions certified per swap candidate</div></div>
   </div>
 </section>
@@ -232,7 +236,7 @@
     <div class="dim"><div class="num">02</div><div class="n g">Arg Validity</div><div class="d">Tool arguments parse as JSON and contain every required key.</div></div>
     <div class="dim"><div class="num">03</div><div class="n g">Schema Validity</div><div class="d">JSON-output tasks return parseable, correctly-shaped objects.</div></div>
     <div class="dim"><div class="num">04</div><div class="n g">Non-Refusal</div><div class="d">No refusals or empty outputs on benign tasks.</div></div>
-    <div class="dim"><div class="num">05</div><div class="n b">Equivalence · Panel</div><div class="d">A judge panel scores candidate vs baseline 1–5 — reported as median + spread, never one judge.</div></div>
+    <div class="dim"><div class="num">05</div><div class="n b">Equivalence · Panel</div><div class="d">A panel of judge models — recommend ≥3, from different families — scores candidate vs baseline 1–5, reported as median + spread, never one judge.</div></div>
   </div>
   <div class="whypanel"><p><b>Why a panel?</b> The <a href="index.html">Inference Index</a> research put identical outputs in front of 10 independent judges: preservation scores ranged from 61% to 97%. One judge is an opinion. A panel with a disclosed spread is a measurement.</p></div>
 </section>
@@ -252,6 +256,7 @@
     </table>
   </div>
   <p class="samplenote" id="samplenote" style="display:none">⚠ SAMPLE REPORT — illustrative format, not measured data. One CLI command against your endpoints replaces it with real measurements.</p>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:8px;letter-spacing:.5px">CERTIFIED = tool fidelity ≥95% · equivalence median ≥4 · zero refusals &nbsp;·&nbsp; FAIL = tool fidelity &lt;80% &nbsp;·&nbsp; CAUTION = everything between. The CLI exits non-zero on any FAIL — drop it in CI ahead of every routing change.</p>
 </section>
 
 <hr class="rule">
@@ -264,18 +269,29 @@
     <span class="ep">DATABRICKS SERVING ENDPOINTS</span><span class="ep">NEBIUS TOKEN FACTORY</span>
     <span class="ep">OPENAI</span><span class="ep">GROQ</span><span class="ep">TOGETHER</span><span class="ep">vLLM / SELF-HOSTED</span>
   </div>
-<pre>python3 pipeline/agent_verify.py \
+<pre>git clone https://github.com/AmperesAI/inference-index && cd inference-index
+
+python3 pipeline/agent_verify.py \
   --tasks pipeline/agent_tasks.jsonl \
   --model <b>"baseline|https://api.openai.com/v1|gpt-5|OPENAI_API_KEY"</b> \
   --model <b>"swap-1|https://api.tokenfactory.nebius.com/v1|meta-llama/Meta-Llama-3.1-8B-Instruct-fast|NEBIUS_API_KEY"</b> \
+  --model <b>"swap-2|https://&lt;workspace&gt;.cloud.databricks.com/serving-endpoints|databricks-meta-llama-3-1-8b-instruct|DATABRICKS_TOKEN"</b> \
   --judge <b>"judge-1|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.5-pro|GEMINI_API_KEY"</b> \
+  --judge <b>"judge-2|https://api.tokenfactory.nebius.com/v1|Qwen/Qwen3-235B-A22B-Instruct-2507|NEBIUS_API_KEY"</b> \
+  --judge <b>"judge-3|https://api.mistral.ai/v1|mistral-large-3|MISTRAL_API_KEY"</b> \
   --out docs/agent-verify-report.json</pre>
-  <p class="lead" style="margin-top:22px">Ten agent-shaped tasks ship in the suite — tool calls, multi-arg bookings, JSON extraction, a no-tool distractor. Swap in traces from your own agents for a fleet-specific certification. <b>The index prices the market. Agent Verify certifies the swap.</b> Same panel methodology.</p>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:10px;letter-spacing:.5px">Single stdlib-only Python file — no pip install. A 2-candidate, 3-judge run ≈ 100 small API calls, a few dollars, ~5 minutes. Repeat --judge to grow the panel; verdicts always report median + spread.</p>
+  <p class="lead" style="margin-top:22px">Ten agent-shaped tasks ship in the suite — tool calls, multi-arg bookings, JSON extraction, a no-tool distractor. One JSONL line per task; your existing tool schemas paste straight in:</p>
+<pre>{"id":"weather-tool","user":"What's the weather in San Francisco right now?",
+ "tools":[{"type":"function","function":{"name":"get_weather","description":"Get current weather for a city",
+   "parameters":{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}}}],
+ "expect":{"tool":"get_weather","required_args":["city"]}}</pre>
+  <p class="lead" style="margin-top:22px">Swap in traces from your own agents for a fleet-specific certification. <b>The index prices the market. Agent Verify certifies the swap.</b> Same panel methodology.</p>
 </section>
 
 <footer>
   <a href="https://github.com/AmperesAI/inference-index">GITHUB.COM/AMPERESAI/INFERENCE-INDEX</a> &nbsp;·&nbsp; PART OF THE INFERENCE INDEX
-  <div style="margin-top:8px;color:var(--dim)">BUILT ON THE 10-JUDGE PANEL METHODOLOGY · TMLR-TRACK RESEARCH · 2026</div>
+  <div style="margin-top:8px;color:var(--dim)">BUILT ON THE 10-JUDGE PANEL METHODOLOGY · UNDER REVIEW AT TMLR · 2026</div>
 </footer>
 </div>
 
@@ -286,7 +302,9 @@ function sizeCanvas(){cv.width=innerWidth;cv.height=innerHeight;
   stars=Array.from({length:Math.min(420,innerWidth)},()=>({
     x:Math.random()*cv.width,y:Math.random()*cv.height,
     z:Math.random()*1.2+.2,r:Math.random()*1.1+.2,tw:Math.random()*Math.PI*2}));}
-sizeCanvas();addEventListener('resize',sizeCanvas);
+sizeCanvas();
+let lastW=innerWidth;
+addEventListener('resize',()=>{if(innerWidth!==lastW){lastW=innerWidth;sizeCanvas();}else{cv.height=innerHeight;}});
 let shooting=null;
 (function draw(t){
   cx.clearRect(0,0,cv.width,cv.height);
@@ -302,7 +320,8 @@ let shooting=null;
     cx.moveTo(shooting.x+shooting.l,shooting.y+shooting.l*.35);
     cx.lineTo(shooting.x+shooting.l-46,shooting.y+(shooting.l-46)*.35);cx.stroke();
     if(shooting.l>300)shooting=null;}
-  cx.globalAlpha=1;requestAnimationFrame(draw);
+  cx.globalAlpha=1;
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(draw);
 })(0);
 
 /* ─────────── scroll reveal ─────────── */
@@ -349,22 +368,28 @@ colsEl.innerHTML=CANDS.map((c,ci)=>`
  </div>`).join('');
 
 /* ─────────── mission timeline engine ─────────── */
-let events=[],t0=null,speed=1,timer=null,running=false;
+let events=[],t0=null,speed=1,timer=null,running=false,runId=0;
 const clock=document.getElementById('clock'),cstatus=document.getElementById('cstatus'),clog=document.getElementById('clog');
 function log(msg,ok){const d=document.createElement('div');if(ok)d.className='p';d.textContent='> '+msg;
   clog.appendChild(d);while(clog.children.length>5)clog.removeChild(clog.firstChild);}
-function toggleSpeed(){speed=speed===1?2:1;document.getElementById('speedbtn').textContent='SPEED '+speed+'×';}
+function toggleSpeed(){
+  if(t0!==null&&timer){const el=(performance.now()-t0)*speed;speed=speed===1?2:1;t0=performance.now()-el/speed;}
+  else speed=speed===1?2:1;
+  document.getElementById('speedbtn').textContent='SPEED '+speed+'×';}
 function mark(ci,ti){
+  const myRun=runId;
   const [tool,args,schema,ref,eq]=CANDS[ci].t[ti];
   document.getElementById(`r${ci}-${ti}`).classList.add('live');
   [[0,tool],[1,args],[2,schema]].forEach(([k,v],j)=>{
-    setTimeout(()=>{const el=document.getElementById(`k${ci}-${ti}-${k}`);
+    setTimeout(()=>{if(myRun!==runId)return;
+      const el=document.getElementById(`k${ci}-${ti}-${k}`);
       el.classList.add('show',v===null?'na':v?'ok':'bad');
       el.textContent=v===null?'—':v?'✓':'✕';
       if(v===0)document.getElementById(`col${ci}`).classList.add('shake'),
         setTimeout(()=>document.getElementById(`col${ci}`).classList.remove('shake'),450);
     },(j+1)*180/speed);});
-  setTimeout(()=>{const e=document.getElementById(`e${ci}-${ti}`);
+  setTimeout(()=>{if(myRun!==runId)return;
+    const e=document.getElementById(`e${ci}-${ti}`);
     e.textContent=eq+'/5';e.classList.add('show',eq>=4?'hi':eq>=3?'mid':'lo');},760/speed);
 }
 function fillGauges(ci){
@@ -397,8 +422,8 @@ function buildTimeline(){
     document.getElementById(`s${ci}`).classList.add('show');
     log(`${c.name}: ${c.verdict}`,c.verdict==='CERTIFIED');}});});
   t+=3600;
-  st(t,'MISSION COMPLETE — swap certified where safe. Run the CLI for your fleet’s real report.');
-  say(t,'mission complete',true);
+  st(t,'RUN COMPLETE — 2 of 3 candidates safe to swap. Run the CLI for your fleet’s real report.');
+  say(t,'run complete — verdicts posted',true);
   events.push({t:t+10,fn:()=>{running=false;}});
 }
 function resetMission(){
@@ -409,10 +434,12 @@ function resetMission(){
   document.querySelectorAll('.gauge .bar').forEach(e=>e.style.strokeDashoffset=126);
   document.querySelectorAll('.gv').forEach(e=>e.textContent='—');
   clog.innerHTML='';
+  cstatus.textContent='STANDBY — awaiting launch command';
+  clock.textContent='T+00:00.0';
 }
 function startMission(){
   document.getElementById('mission').scrollIntoView({behavior:'smooth'});
-  resetMission();buildTimeline();
+  runId++;resetMission();buildTimeline();
   t0=performance.now();running=true;let fired=0;
   if(timer)clearInterval(timer);
   timer=setInterval(()=>{

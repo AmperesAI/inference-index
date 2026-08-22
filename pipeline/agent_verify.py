@@ -235,6 +235,9 @@ def main() -> None:
     for m in report_models:
         print(f"{m['model']}: {m['verdict']}  tool={m['tool_fidelity_pct']}%  equiv={m['equivalence_median']}")
     print(f"wrote {args.out}")
+    # CI gate: a FAILing swap candidate fails the build
+    if any(m["verdict"] == "FAIL" for m in report_models):
+        sys.exit(1)
 
 
 if __name__ == "__main__":

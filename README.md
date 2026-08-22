@@ -9,7 +9,7 @@ Every pricing page tells you what a million tokens costs. None of them tell you 
 
 [**Live Index →**](https://amperesai.github.io/inference-index/) · [Methodology](#-methodology-quality-adjusted-pricing) · [Architecture](#-architecture) · [Pilot Tracks](#-pilot-tracks)
 
-![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-scraped_from_official_pages-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
+![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-official_sources_linked-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
 </div>
 
@@ -69,10 +69,10 @@ flowchart LR
 
     SITE["📊 GitHub Pages<br/><b>amperesai.github.io/inference-index</b><br/>zero servers, zero cost, cache-proof"]
 
-    subgraph CONSUMERS["🎯 Consumers"]
-        C1["Databricks pilot<br/>(provider track)"]
-        C2["Cursor pilot<br/>(buyer track)"]
-        C3["Nebius pilot<br/>(open-model track)"]
+    subgraph CONSUMERS["🎯 Pilot tracks (in discussion — no signed pilots)"]
+        C1["Provider track<br/>target: Databricks FM APIs"]
+        C2["Buyer track<br/>target: Cursor"]
+        C3["Open-model track<br/>target: Nebius"]
         B1["⚡ Bolt Pilot Console<br/>per-workload savings simulator"]
     end
 
@@ -109,7 +109,7 @@ sequenceDiagram
 
 ## 🧪 Methodology: quality-adjusted pricing
 
-1. **Prices are scraped, not typed.** Apify's `website-content-crawler` reads the official pricing pages (several are JS-heavy — that's why a headless crawler, not `curl`). Every number links its source URL and scrape timestamp.
+1. **Prices come from official pages, never typed from memory.** Apify's `website-content-crawler` automates the refresh (several pages are JS-heavy — that's why a headless crawler, not `curl`); the current snapshot was hand-verified against the official pages. Every number links its source URL and the snapshot's as-of date.
 2. **Quality comes from a panel, never a single judge.** Our TMLR-track research showed single-judge preservation numbers swing by 36 points on identical outputs. The index only publishes preservation as *panel median + full spread*.
 3. **$/MQT** = blended $/1M ÷ panel-median preservation. A model that's 10× cheaper but preserves 60% of quality is not 10× better value — it's 6×.
 4. **Honesty over hype.** Unverified rows say `pending`, never a modeled guess. The real-world caveat (usable ≠ equivalent) ships on the site, above the fold, because buyers who get burned don't come back.
@@ -118,11 +118,13 @@ sequenceDiagram
 
 The index is the neutral instrument; the pilots are where it earns money.
 
-| Track | Partner conversation | What they get |
+| Track | Target partner (early conversations) | What they get |
 |---|---|---|
 | **Provider** | **Databricks** (Foundation Model APIs) | A verified $/MQT score for hosted models — third-party proof of price-performance for their serving stack |
-| **Buyer** | **Cursor** (AI coding, frontier-model spend) | Route coding traffic by $/MQT instead of raw price; panel-verified downshift pairs for code tasks |
-| **Open-model** | **Nebius** (AI Studio / Token Factory) | The flagship verified pair (Llama 70B→8B, QIX 88.5) runs on exactly the open models they serve — the index is their sales sheet |
+| **Buyer** | **Cursor** (AI coding, frontier-model spend) | Route coding traffic by $/MQT instead of raw price; code-task panel runs are on the roadmap (the general-benchmark pair is verified today) |
+| **Open-model** | **Nebius** (AI Studio / Token Factory) | The flagship verified pair (Llama 70B→8B, QIX 88.5) runs on exactly the open models they serve — third-party economics for their catalog |
+
+*Proposed tracks in early conversations — no signed pilots, partnerships, or endorsements exist today.*
 
 ## 🤖 Agent Verify — certify the swap
 
@@ -144,8 +146,12 @@ python3 pipeline/agent_verify.py \
   --model "baseline|https://api.openai.com/v1|gpt-5|OPENAI_API_KEY" \
   --model "swap-1|https://api.tokenfactory.nebius.com/v1|meta-llama/Meta-Llama-3.1-8B-Instruct-fast|NEBIUS_API_KEY" \
   --judge "judge-1|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.5-pro|GEMINI_API_KEY" \
+  --judge "judge-2|https://api.tokenfactory.nebius.com/v1|Qwen/Qwen3-235B-A22B-Instruct-2507|NEBIUS_API_KEY" \
+  --judge "judge-3|https://api.mistral.ai/v1|mistral-large-3|MISTRAL_API_KEY" \
   --out docs/agent-verify-report.json
 ```
+
+The CLI exits non-zero when any candidate FAILs — drop it in CI ahead of every routing change. Repeat `--judge` to grow the panel; verdicts always report median + spread.
 
 Ten agent-shaped tasks ship in [`pipeline/agent_tasks.jsonl`](pipeline/agent_tasks.jsonl) (tool calls, multi-arg bookings, JSON extraction, and a no-tool distractor that catches over-eager tool callers). Replace them with your own agent's traces for a fleet-specific certification. The checked-in [report](docs/agent-verify-report.json) is a **clearly-labeled sample** showing the output format — generate a real one against your fleet in ~2 minutes.
 
