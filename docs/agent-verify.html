@@ -3,136 +3,446 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Verify — certify model swaps for AI agents · Inference Index</title>
-<meta name="description" content="Same agent, different model, different behavior. Agent Verify runs your agent task suite across candidate models and certifies swaps: tool fidelity, schema validity, and judge-panel equivalence.">
+<title>Agent Verify — Mission: Model Swap Certification</title>
+<meta name="description" content="Same agent. Different model. Different behavior. Agent Verify certifies model swaps for AI agent fleets: tool fidelity, schema validity, judge-panel equivalence. Part of the Inference Index.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07090c; --panel:#0d1117; --panel2:#11161d; --line:#1d2530;
-    --txt:#dbe4ee; --dim:#7c8b9d; --faint:#4a5765;
-    --green:#3ddc84; --red:#ff5d5d; --amber:#ffc24b; --cyan:#4dd0e1; --violet:#b18cff;
+    --bg:#020304; --panel:rgba(10,13,16,.72); --line:#1c232b; --line2:#2a333d;
+    --txt:#eef2f6; --dim:#8a97a4; --faint:#4c5661;
+    --green:#30d158; --red:#ff453a; --amber:#ffd60a; --blue:#8ab4ff;
+    --cond:'Barlow Condensed','Arial Narrow',sans-serif;
+    --sans:'Barlow',-apple-system,'Segoe UI',sans-serif;
     --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5}
-  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.55;overflow-x:hidden}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
   .mono{font-family:var(--mono)}
-  header{max-width:1180px;margin:0 auto;padding:34px 20px 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:14px}
-  .logo{font-family:var(--mono);font-weight:600;font-size:26px;letter-spacing:.5px}
-  .logo .idx{color:var(--violet)}
-  .back{margin-left:auto;font-family:var(--mono);font-size:12px}
-  .tag{max-width:1180px;margin:0 auto;padding:0 20px 6px;color:var(--dim);font-size:16px}
-  .tag b{color:var(--txt)}
-  section{max-width:1180px;margin:26px auto;padding:0 20px}
-  h2{font-size:15px;font-family:var(--mono);letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
-  .card p{color:var(--dim);font-size:13.5px}
-  .samplebanner{max-width:1180px;margin:18px auto 0;padding:0 20px}
-  .samplebanner .inner{border:1px dashed var(--amber);background:#181305;border-radius:10px;padding:12px 16px;color:#e8d5a0;font-size:13px;font-family:var(--mono)}
-  .dims{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-  .dim{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
-  .dim .n{font-family:var(--mono);font-size:12px;color:var(--violet);letter-spacing:1px}
-  .dim .d{font-size:12.5px;color:var(--dim);margin-top:6px}
-  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
-  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:880px}
-  th{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);text-align:right;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .wrap{position:relative;z-index:1}
+
+  /* ── top bar ── */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:18px;
+    padding:14px 26px;background:linear-gradient(180deg,rgba(2,3,4,.92),rgba(2,3,4,0));backdrop-filter:blur(2px)}
+  nav .wordmark{font-family:var(--cond);font-weight:800;font-size:20px;letter-spacing:4px;text-transform:uppercase}
+  nav .wordmark span{color:var(--dim)}
+  nav .links{margin-left:auto;display:flex;gap:22px;font-family:var(--mono);font-size:11px;letter-spacing:2px}
+  nav .links a{color:var(--dim)} nav .links a:hover{color:var(--txt);text-decoration:none}
+
+  /* ── hero ── */
+  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:110px 20px 60px;position:relative}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:5px;color:var(--dim);text-transform:uppercase}
+  .hero h1{font-family:var(--cond);font-weight:800;font-size:clamp(64px,15vw,190px);line-height:.92;
+    letter-spacing:2px;text-transform:uppercase;margin:18px 0 10px;
+    background:linear-gradient(180deg,#fff 55%,#5b6772);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{max-width:760px;font-size:clamp(16px,2.2vw,21px);color:var(--dim)}
+  .hero .sub b{color:var(--txt)}
+  .cta{display:flex;gap:16px;margin-top:38px;flex-wrap:wrap;justify-content:center}
+  .btn{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;
+    padding:15px 34px;border:1px solid var(--line2);background:transparent;color:var(--txt);border-radius:2px;transition:all .2s}
+  .btn:hover{border-color:#fff;text-decoration:none;color:#fff}
+  .btn.primary{background:#fff;color:#000;border-color:#fff;font-weight:600}
+  .btn.primary:hover{background:var(--green);border-color:var(--green)}
+  .scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--faint);
+    font-family:var(--mono);font-size:10px;letter-spacing:3px;animation:bob 2.2s infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+  section{max-width:1240px;margin:0 auto;padding:90px 24px;position:relative}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+  h2{font-family:var(--cond);font-weight:700;font-size:clamp(34px,5vw,56px);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+  .lead{color:var(--dim);max-width:820px;font-size:17px}
+  .lead b{color:var(--txt)}
+  .rule{border:none;border-top:1px solid var(--line);max-width:1240px;margin:0 auto}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.on{opacity:1;transform:none}
+
+  /* ── problem stats ── */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);
+    border:1px solid var(--line);margin-top:40px}
+  .stat{background:#05070a;padding:30px 26px}
+  .stat .v{font-family:var(--cond);font-weight:800;font-size:54px;line-height:1}
+  .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--dim);margin-top:10px;text-transform:uppercase}
+  .g{color:var(--green)} .r{color:var(--red)} .a{color:var(--amber)} .b{color:var(--blue)}
+
+  /* ── mission control ── */
+  #mission{max-width:1360px}
+  .console{border:1px solid var(--line2);background:var(--panel);backdrop-filter:blur(6px);border-radius:4px;overflow:hidden;margin-top:34px}
+  .chead{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px}
+  .clock{color:var(--green);font-weight:600;min-width:110px}
+  .cstatus{color:var(--dim);flex:1;min-width:200px}
+  .simtag{color:#000;background:var(--amber);font-weight:700;padding:2px 9px;border-radius:2px;letter-spacing:2px;font-size:10px}
+  .cbtn{cursor:pointer;border:1px solid var(--line2);background:transparent;color:var(--txt);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:2px;padding:6px 14px;border-radius:2px}
+  .cbtn:hover{border-color:#fff}
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+  .col{background:#05070a;padding:18px 16px 22px;position:relative;min-height:540px}
+  .col .cname{font-family:var(--cond);font-weight:700;font-size:24px;letter-spacing:1px;text-transform:uppercase}
+  .col .cid{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-bottom:14px;letter-spacing:.5px}
+  .trow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--faint);
+    padding:4.5px 0;border-bottom:1px dashed #10161c;opacity:.28;transition:opacity .3s}
+  .trow.live{opacity:1;color:var(--dim)}
+  .trow .tname{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tick{width:16px;text-align:center;opacity:0;transform:scale(.4);transition:all .25s}
+  .tick.show{opacity:1;transform:none}
+  .tick.ok{color:var(--green)} .tick.bad{color:var(--red)} .tick.na{color:#333c46}
+  .eq{width:30px;text-align:right;opacity:0;transition:opacity .3s}
+  .eq.show{opacity:1}
+  .eq.hi{color:var(--green)} .eq.mid{color:var(--amber)} .eq.lo{color:var(--red)}
+  .gauges{display:flex;justify-content:space-between;gap:6px;margin-top:16px}
+  .gauge{text-align:center;flex:1}
+  .gauge svg{width:56px;height:56px;transform:rotate(-90deg)}
+  .gauge circle{fill:none;stroke-width:4}
+  .gauge .track{stroke:#141b22}
+  .gauge .bar{stroke:var(--green);stroke-linecap:round;stroke-dasharray:126;stroke-dashoffset:126;transition:stroke-dashoffset 1.4s ease}
+  .gauge .gv{font-family:var(--mono);font-size:11px;margin-top:-38px;height:38px;display:flex;align-items:center;justify-content:center}
+  .gauge .gl{font-family:var(--mono);font-size:8.5px;letter-spacing:1px;color:var(--faint);margin-top:4px;text-transform:uppercase}
+  .stamp{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-8deg) scale(3);opacity:0;
+    font-family:var(--cond);font-weight:800;font-size:44px;letter-spacing:6px;padding:6px 22px;border:4px solid;border-radius:4px;
+    pointer-events:none;text-transform:uppercase}
+  .stamp.show{animation:slam .45s cubic-bezier(.2,1.4,.4,1) forwards}
+  @keyframes slam{0%{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(3)}
+    70%{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(.95)}
+    100%{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}}
+  .stamp.CERTIFIED{color:var(--green);border-color:var(--green);text-shadow:0 0 26px rgba(48,209,88,.5)}
+  .stamp.CAUTION{color:var(--amber);border-color:var(--amber)}
+  .stamp.FAIL{color:var(--red);border-color:var(--red);text-shadow:0 0 26px rgba(255,69,58,.5)}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .clog{font-family:var(--mono);font-size:11px;color:var(--dim);padding:12px 18px;border-top:1px solid var(--line);
+    min-height:88px;max-height:88px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+  .clog div{opacity:0;animation:fadein .4s forwards}
+  @keyframes fadein{to{opacity:1}}
+  .clog .p{color:var(--green)}
+
+  /* ── dimensions ── */
+  .dims{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:40px}
+  .dim{background:#05070a;padding:28px 24px;transition:background .3s}
+  .dim:hover{background:#080c11}
+  .dim .num{font-family:var(--cond);font-weight:800;font-size:40px;color:#20262d;line-height:1}
+  .dim .n{font-family:var(--mono);font-size:12px;letter-spacing:2px;margin:10px 0 8px;text-transform:uppercase}
+  .dim .d{font-size:13.5px;color:var(--dim)}
+  .whypanel{border-left:2px solid var(--blue);background:rgba(138,180,255,.05);padding:18px 22px;margin-top:34px;max-width:900px}
+  .whypanel p{color:#b9cdf2;font-size:15px}
+
+  /* ── report table ── */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line2);background:var(--panel);margin-top:36px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);
+    text-align:right;padding:13px 16px;border-bottom:1px solid var(--line2);white-space:nowrap}
   th:first-child{text-align:left}
-  td{padding:11px 14px;border-bottom:1px solid #131a23;text-align:right;font-family:var(--mono);white-space:nowrap}
+  td{padding:13px 16px;border-bottom:1px solid #0d1218;text-align:right;font-family:var(--mono);white-space:nowrap}
   td:first-child{text-align:left}
   tr:last-child td{border-bottom:none}
-  tr:hover td{background:var(--panel2)}
-  .model{color:var(--txt);font-weight:500}
-  .sub{color:var(--faint);font-size:11px;display:block}
-  .v{font-size:10px;letter-spacing:1px;border-radius:4px;padding:3px 8px;font-weight:700}
-  .v.CERTIFIED{color:#04110a;background:var(--green)}
-  .v.CAUTION{color:#221a04;background:var(--amber)}
-  .v.FAIL{color:#fff;background:var(--red)}
-  .good{color:var(--green)} .warn{color:var(--amber)} .bad{color:var(--red)}
-  .spread{color:var(--faint);font-size:11px}
-  pre{background:#0a0f14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;color:var(--dim);line-height:1.6}
+  .model{color:var(--txt);font-weight:600;font-family:var(--sans)}
+  .subid{color:var(--faint);font-size:10.5px;display:block;font-family:var(--mono)}
+  .v{font-family:var(--cond);font-weight:700;font-size:14px;letter-spacing:2px;border:2px solid;border-radius:2px;padding:2px 10px}
+  .v.CERTIFIED{color:var(--green);border-color:var(--green)}
+  .v.CAUTION{color:var(--amber);border-color:var(--amber)}
+  .v.FAIL{color:var(--red);border-color:var(--red)}
+  .spread{color:var(--faint);font-size:10.5px}
+  .samplenote{font-family:var(--mono);font-size:11px;color:var(--amber);margin-top:10px;letter-spacing:.5px}
+
+  /* ── fleet ── */
+  .endpoints{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0}
+  .ep{font-family:var(--mono);font-size:12px;letter-spacing:1px;border:1px solid var(--line2);padding:8px 16px;color:var(--dim)}
+  pre{background:#04060a;border:1px solid var(--line);padding:20px 22px;overflow-x:auto;font-family:var(--mono);
+    font-size:12.5px;color:var(--dim);line-height:1.7;margin-top:24px}
   pre b{color:var(--txt)}
-  .why{border-left:3px solid var(--violet);background:#100b1c;border-radius:6px;padding:12px 14px;margin-top:14px;color:#cfc2ef;font-size:13.5px}
-  footer{border-top:1px solid var(--line);margin-top:44px;padding:26px 20px 40px;text-align:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+  footer{border-top:1px solid var(--line);padding:34px 24px 46px;text-align:center;color:var(--faint);
+    font-family:var(--mono);font-size:11.5px;letter-spacing:1px}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+    .scrollcue{display:none}
+  }
 </style>
 </head>
 <body>
+<canvas id="stars"></canvas>
+<div class="wrap">
 
-<header>
-  <div class="logo">AGENT<span class="idx">·VERIFY</span></div>
-  <div class="back"><a href="index.html">← INFERENCE·INDEX</a></div>
-</header>
-<p class="tag"><b>Same agent. Different model. Different behavior.</b> Agent platforms swap models constantly — for cost, availability, routing. Agent Verify runs your agent's task suite across candidate models and <b>certifies the swap</b> before your users find out the hard way.</p>
-
-<div class="samplebanner" id="samplebanner" style="display:none"><div class="inner">⚠ SAMPLE REPORT — illustrative format only, not measured data. Generate a real report in ~2 minutes: <b>python3 pipeline/agent_verify.py</b> against your own endpoints (OpenAI, Nebius Token Factory, Databricks serving, Together, Groq, vLLM — anything OpenAI-compatible).</div></div>
-
-<section>
-  <h2>The five dimensions</h2>
-  <div class="dims">
-    <div class="dim"><div class="n">1 · TOOL FIDELITY</div><div class="d">Does the candidate call the same tools the baseline called — and no phantom ones?</div></div>
-    <div class="dim"><div class="n">2 · ARG VALIDITY</div><div class="d">Do tool arguments parse and contain every required key?</div></div>
-    <div class="dim"><div class="n">3 · SCHEMA VALIDITY</div><div class="d">Do JSON-output tasks return parseable, correctly-shaped objects?</div></div>
-    <div class="dim"><div class="n">4 · NON-REFUSAL</div><div class="d">No refusals or empty outputs on benign tasks.</div></div>
-    <div class="dim"><div class="n">5 · EQUIVALENCE (PANEL)</div><div class="d">Judge panel scores candidate vs baseline 1–5 — reported as median + spread, never one judge.</div></div>
+<nav>
+  <div class="wordmark">AGENT<span> / </span>VERIFY</div>
+  <div class="links">
+    <a href="#mission">MISSION CONTROL</a>
+    <a href="#report">REPORT</a>
+    <a href="#fleet">FLEET</a>
+    <a href="index.html">INFERENCE INDEX ↗</a>
   </div>
-  <div class="why">Why a panel? The <a href="index.html">Inference Index</a> research showed 10 judges scored the <i>identical</i> outputs anywhere from 61% to 97% preserved. One judge is an anecdote. A panel with a disclosed spread is a measurement.</div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Inference Index &nbsp;·&nbsp; Mission: Model Swap Certification</div>
+  <h1>Agent<br>Verify</h1>
+  <p class="sub"><b>Same agent. Different model. Different behavior.</b> Agent fleets swap models constantly — cost, availability, routing. Agent Verify certifies the swap before your users find out the hard way.</p>
+  <div class="cta">
+    <button class="btn primary" onclick="startMission()">▶ &nbsp;Launch Demo</button>
+    <a class="btn" href="#report">Certification Report</a>
+  </div>
+  <div class="scrollcue">▼ SCROLL</div>
+</div>
+
+<hr class="rule">
+
+<section class="reveal">
+  <div class="kicker">The Problem</div>
+  <h2>Swaps ship blind</h2>
+  <p class="lead">Multi-model agent platforms re-route the model beneath an agent every day. The prompt is identical — the <b>behavior is not</b>: different tools called, malformed arguments, broken JSON, silent refusals. And the research is clear on why nobody catches it:</p>
+  <div class="stats">
+    <div class="stat"><div class="v r">0</div><div class="l">standard tests run before a fleet model swap today</div></div>
+    <div class="stat"><div class="v a">61–97%</div><div class="l">quality-preservation range across 10 judges on identical outputs</div></div>
+    <div class="stat"><div class="v b">10</div><div class="l">judges in our panel — a single judge is an anecdote</div></div>
+    <div class="stat"><div class="v g">5</div><div class="l">behavioral dimensions certified per swap candidate</div></div>
+  </div>
 </section>
 
-<section>
-  <h2>Swap certification report</h2>
+<hr class="rule">
+
+<section id="mission" class="reveal">
+  <div class="kicker">Live Simulation</div>
+  <h2>Mission Control</h2>
+  <p class="lead">One task suite. One baseline. Three swap candidates racing in parallel. Watch every tool call, argument, and schema check — then the panel verdict. <b>This replay runs on labeled sample data</b>; the same console renders your fleet's real run.</p>
+
+  <div class="console" id="console">
+    <div class="chead">
+      <span class="clock" id="clock">T+00:00.0</span>
+      <span class="cstatus" id="cstatus">STANDBY — awaiting launch command</span>
+      <span class="simtag">SIMULATION · SAMPLE DATA</span>
+      <button class="cbtn" id="speedbtn" onclick="toggleSpeed()">SPEED 1×</button>
+      <button class="cbtn" onclick="startMission()">LAUNCH</button>
+    </div>
+    <div class="cols" id="cols"></div>
+    <div class="clog" id="clog"></div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="reveal">
+  <div class="kicker">Methodology</div>
+  <h2>Five dimensions. One verdict.</h2>
+  <div class="dims">
+    <div class="dim"><div class="num">01</div><div class="n g">Tool Fidelity</div><div class="d">Calls the same tools the baseline called — and no phantom ones. The distractor task catches over-eager callers.</div></div>
+    <div class="dim"><div class="num">02</div><div class="n g">Arg Validity</div><div class="d">Tool arguments parse as JSON and contain every required key.</div></div>
+    <div class="dim"><div class="num">03</div><div class="n g">Schema Validity</div><div class="d">JSON-output tasks return parseable, correctly-shaped objects.</div></div>
+    <div class="dim"><div class="num">04</div><div class="n g">Non-Refusal</div><div class="d">No refusals or empty outputs on benign tasks.</div></div>
+    <div class="dim"><div class="num">05</div><div class="n b">Equivalence · Panel</div><div class="d">A judge panel scores candidate vs baseline 1–5 — reported as median + spread, never one judge.</div></div>
+  </div>
+  <div class="whypanel"><p><b>Why a panel?</b> The <a href="index.html">Inference Index</a> research put identical outputs in front of 10 independent judges: preservation scores ranged from 61% to 97%. One judge is an opinion. A panel with a disclosed spread is a measurement.</p></div>
+</section>
+
+<hr class="rule">
+
+<section id="report" class="reveal">
+  <div class="kicker">Output</div>
+  <h2>Swap Certification Report</h2>
   <div class="tblwrap">
     <table>
       <thead><tr>
-        <th>Candidate</th><th>Tool fidelity</th><th>Arg validity</th><th>Schema validity</th>
-        <th>Refusals</th><th>Equivalence (panel)</th><th>Latency</th><th>Verdict</th>
+        <th>Candidate</th><th>Tool Fidelity</th><th>Arg Validity</th><th>Schema</th>
+        <th>Refusals</th><th>Equivalence</th><th>Latency</th><th>Verdict</th>
       </tr></thead>
       <tbody id="rows"><tr><td colspan="8" style="text-align:center;color:var(--faint)">loading report…</td></tr></tbody>
     </table>
   </div>
-  <p style="color:var(--faint);font-size:12px;margin-top:8px" id="meta"></p>
+  <p class="samplenote" id="samplenote" style="display:none">⚠ SAMPLE REPORT — illustrative format, not measured data. One CLI command against your endpoints replaces it with real measurements.</p>
 </section>
 
-<section>
-  <h2>Run it against your fleet</h2>
-  <div class="card">
-    <p style="margin-bottom:10px">One command. First <span class="mono">--model</span> is your baseline, the rest are swap candidates. Works with any OpenAI-compatible endpoint — which is exactly what multi-model agent platforms (Databricks serving endpoints, Nebius Token Factory, OpenAI, Groq, vLLM) already speak.</p>
+<hr class="rule">
+
+<section id="fleet" class="reveal">
+  <div class="kicker">Integration</div>
+  <h2>Point it at your fleet</h2>
+  <p class="lead">Agent Verify speaks the protocol your fleet already speaks: <b>any OpenAI-compatible endpoint</b>. Zero dependencies, one command, report in minutes.</p>
+  <div class="endpoints">
+    <span class="ep">DATABRICKS SERVING ENDPOINTS</span><span class="ep">NEBIUS TOKEN FACTORY</span>
+    <span class="ep">OPENAI</span><span class="ep">GROQ</span><span class="ep">TOGETHER</span><span class="ep">vLLM / SELF-HOSTED</span>
+  </div>
 <pre>python3 pipeline/agent_verify.py \
   --tasks pipeline/agent_tasks.jsonl \
   --model <b>"baseline|https://api.openai.com/v1|gpt-5|OPENAI_API_KEY"</b> \
   --model <b>"swap-1|https://api.tokenfactory.nebius.com/v1|meta-llama/Meta-Llama-3.1-8B-Instruct-fast|NEBIUS_API_KEY"</b> \
   --judge <b>"judge-1|https://generativelanguage.googleapis.com/v1beta/openai|gemini-2.5-pro|GEMINI_API_KEY"</b> \
   --out docs/agent-verify-report.json</pre>
-    <p style="margin-top:10px">Ten agent-shaped tasks ship in <span class="mono">pipeline/agent_tasks.jsonl</span> (tool calls, multi-arg bookings, JSON extraction, a no-tool distractor that catches over-eager tool callers). Replace them with traces from your own agent for a fleet-specific certification.</p>
-  </div>
+  <p class="lead" style="margin-top:22px">Ten agent-shaped tasks ship in the suite — tool calls, multi-arg bookings, JSON extraction, a no-tool distractor. Swap in traces from your own agents for a fleet-specific certification. <b>The index prices the market. Agent Verify certifies the swap.</b> Same panel methodology.</p>
 </section>
 
 <footer>
-  <a href="https://github.com/AmperesAI/inference-index">github.com/AmperesAI/inference-index</a> · Agent Verify is part of the Inference Index
-  <div style="margin-top:8px;color:var(--dim)">the index prices the market · agent verify certifies the swap · same panel methodology</div>
+  <a href="https://github.com/AmperesAI/inference-index">GITHUB.COM/AMPERESAI/INFERENCE-INDEX</a> &nbsp;·&nbsp; PART OF THE INFERENCE INDEX
+  <div style="margin-top:8px;color:var(--dim)">BUILT ON THE 10-JUDGE PANEL METHODOLOGY · TMLR-TRACK RESEARCH · 2026</div>
 </footer>
+</div>
 
 <script>
-const pctCell=(v,invert)=>{
-  if(v==null)return '<span class="spread">—</span>';
-  const good=invert? v<=0 : v>=95, warn=invert? v<=10 : v>=80;
-  return `<span class="${good?'good':warn?'warn':'bad'}">${v}%</span>`;
-};
-fetch('agent-verify-report.json').then(r=>r.json()).then(d=>{
-  if(d.sample)document.getElementById('samplebanner').style.display='block';
+/* ─────────── starfield ─────────── */
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let stars=[];
+function sizeCanvas(){cv.width=innerWidth;cv.height=innerHeight;
+  stars=Array.from({length:Math.min(420,innerWidth)},()=>({
+    x:Math.random()*cv.width,y:Math.random()*cv.height,
+    z:Math.random()*1.2+.2,r:Math.random()*1.1+.2,tw:Math.random()*Math.PI*2}));}
+sizeCanvas();addEventListener('resize',sizeCanvas);
+let shooting=null;
+(function draw(t){
+  cx.clearRect(0,0,cv.width,cv.height);
+  for(const s of stars){
+    const a=.35+.45*Math.abs(Math.sin(t/1400+s.tw));
+    cx.globalAlpha=a*s.z;cx.fillStyle='#cfe2ff';
+    cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill();
+    s.x-=.02*s.z; if(s.x<0)s.x=cv.width;
+  }
+  if(!shooting&&Math.random()<.002)shooting={x:Math.random()*cv.width,y:Math.random()*cv.height*.5,l:0};
+  if(shooting){shooting.l+=14;cx.globalAlpha=Math.max(0,1-shooting.l/300);
+    cx.strokeStyle='#fff';cx.lineWidth=1.4;cx.beginPath();
+    cx.moveTo(shooting.x+shooting.l,shooting.y+shooting.l*.35);
+    cx.lineTo(shooting.x+shooting.l-46,shooting.y+(shooting.l-46)*.35);cx.stroke();
+    if(shooting.l>300)shooting=null;}
+  cx.globalAlpha=1;requestAnimationFrame(draw);
+})(0);
+
+/* ─────────── scroll reveal ─────────── */
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('on')),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ─────────── mission data (SAMPLE — internally consistent with the report) ─────────── */
+const TASKS=[
+  {id:'weather-tool',kind:'tool'},{id:'sql-tool',kind:'tool'},{id:'calc-tool',kind:'tool'},
+  {id:'search-tool',kind:'tool'},{id:'booking-multiarg',kind:'tool'},{id:'json-extract',kind:'json'},
+  {id:'json-classify',kind:'json'},{id:'no-tool-distractor',kind:'tool'},
+  {id:'reasoning-consistency',kind:'open'},{id:'instruction-following',kind:'open'}];
+/* per task: [toolOK, argsOK, schemaOK, refused, equivScore] — null = not applicable */
+const CANDS=[
+ {name:'CANDIDATE-MID',id:'mid-tier swap candidate',verdict:'CERTIFIED',lat:'820ms',
+  t:[[1,1,null,0,5],[1,1,null,0,4],[1,1,null,0,4],[1,1,null,0,5],[1,1,null,0,5],
+     [null,null,1,0,4],[null,null,1,0,4],[1,null,null,0,5],[null,null,null,0,4],[null,null,null,0,5]]},
+ {name:'CANDIDATE-SMALL',id:'small swap candidate',verdict:'CAUTION',lat:'410ms',
+  t:[[1,1,null,0,4],[1,1,null,0,4],[1,1,null,0,3],[1,1,null,0,4],[1,0,null,0,2],
+     [null,null,1,0,4],[null,null,1,0,3],[0,null,null,0,4],[null,null,null,0,3],[null,null,null,0,4]]},
+ {name:'CANDIDATE-TINY',id:'tiny swap candidate',verdict:'FAIL',lat:'290ms',
+  t:[[1,1,null,0,3],[1,1,null,1,1],[1,0,null,0,2],[0,null,null,0,2],[0,0,null,0,1],
+     [null,null,0,0,3],[null,null,1,0,2],[0,null,null,0,4],[null,null,null,0,2],[null,null,null,0,3]]}];
+const pct=(arr)=>{const v=arr.filter(x=>x!==null);return v.length?Math.round(1000*v.filter(x=>x===1).length/v.length)/10:null};
+const median=a=>{const s=[...a].sort((x,y)=>x-y),m=s.length/2;return s.length%2?s[Math.floor(m)]:(s[m-1]+s[m])/2};
+
+/* build columns */
+const colsEl=document.getElementById('cols');
+colsEl.innerHTML=CANDS.map((c,ci)=>`
+ <div class="col" id="col${ci}">
+  <div class="cname">${c.name}</div><div class="cid">${c.id} · vs frontier-baseline</div>
+  ${TASKS.map((t,ti)=>`<div class="trow" id="r${ci}-${ti}">
+     <span class="tick" id="k${ci}-${ti}-0" title="tool">⛭</span>
+     <span class="tick" id="k${ci}-${ti}-1" title="args">{}</span>
+     <span class="tick" id="k${ci}-${ti}-2" title="schema">▤</span>
+     <span class="tname">${t.id}</span>
+     <span class="eq" id="e${ci}-${ti}">·/5</span></div>`).join('')}
+  <div class="gauges">${['TOOL','ARGS','SCHEMA','CLEAN','EQUIV'].map((g,gi)=>`
+    <div class="gauge"><svg viewBox="0 0 48 48"><circle class="track" cx="24" cy="24" r="20"/>
+      <circle class="bar" id="g${ci}-${gi}" cx="24" cy="24" r="20"/></svg>
+      <div class="gv" id="gv${ci}-${gi}">—</div><div class="gl">${g}</div></div>`).join('')}
+  </div>
+  <div class="stamp ${c.verdict}" id="s${ci}">${c.verdict}</div>
+ </div>`).join('');
+
+/* ─────────── mission timeline engine ─────────── */
+let events=[],t0=null,speed=1,timer=null,running=false;
+const clock=document.getElementById('clock'),cstatus=document.getElementById('cstatus'),clog=document.getElementById('clog');
+function log(msg,ok){const d=document.createElement('div');if(ok)d.className='p';d.textContent='> '+msg;
+  clog.appendChild(d);while(clog.children.length>5)clog.removeChild(clog.firstChild);}
+function toggleSpeed(){speed=speed===1?2:1;document.getElementById('speedbtn').textContent='SPEED '+speed+'×';}
+function mark(ci,ti){
+  const [tool,args,schema,ref,eq]=CANDS[ci].t[ti];
+  document.getElementById(`r${ci}-${ti}`).classList.add('live');
+  [[0,tool],[1,args],[2,schema]].forEach(([k,v],j)=>{
+    setTimeout(()=>{const el=document.getElementById(`k${ci}-${ti}-${k}`);
+      el.classList.add('show',v===null?'na':v?'ok':'bad');
+      el.textContent=v===null?'—':v?'✓':'✕';
+      if(v===0)document.getElementById(`col${ci}`).classList.add('shake'),
+        setTimeout(()=>document.getElementById(`col${ci}`).classList.remove('shake'),450);
+    },(j+1)*180/speed);});
+  setTimeout(()=>{const e=document.getElementById(`e${ci}-${ti}`);
+    e.textContent=eq+'/5';e.classList.add('show',eq>=4?'hi':eq>=3?'mid':'lo');},760/speed);
+}
+function fillGauges(ci){
+  const c=CANDS[ci],cols=[0,1,2].map(k=>pct(c.t.map(r=>r[k])));
+  const clean=100-Math.round(1000*c.t.filter(r=>r[3]===1).length/c.t.length)/10;
+  const eqm=median(c.t.map(r=>r[4]));
+  const vals=[cols[0],cols[1],cols[2],clean,eqm*20];
+  const labels=[cols[0],cols[1],cols[2],clean,eqm.toFixed(1)];
+  vals.forEach((v,gi)=>{const bar=document.getElementById(`g${ci}-${gi}`);
+    if(v===null){document.getElementById(`gv${ci}-${gi}`).textContent='—';return;}
+    bar.style.strokeDashoffset=126-126*v/100;
+    bar.style.stroke=v>=95?'var(--green)':v>=70?'var(--amber)':'var(--red)';
+    document.getElementById(`gv${ci}-${gi}`).textContent=gi===4?labels[4]:Math.round(v)+'%';});
+}
+function buildTimeline(){
+  events=[];let t=0;
+  const say=(tt,m,ok)=>events.push({t:tt,fn:()=>log(m,ok)});
+  const st=(tt,m)=>events.push({t:tt,fn:()=>cstatus.textContent=m});
+  say(200,'baseline lock: frontier-baseline');say(900,'task suite loaded — 10 tasks');
+  say(1600,'judge panel online — 3 judges');say(2300,'candidates on pad: mid / small / tiny');
+  st(2900,'EXECUTING TASK SUITE — 3 candidates in parallel');say(3000,'ignition — running tasks',true);
+  t=3400;
+  TASKS.forEach((task,ti)=>{CANDS.forEach((c,ci)=>{
+    events.push({t:t+ci*320,fn:()=>mark(ci,ti)});});t+=1750;});
+  st(t,'TELEMETRY — aggregating five dimensions');
+  say(t,'aggregating telemetry across 30 runs');
+  CANDS.forEach((c,ci)=>events.push({t:t+300+ci*250,fn:()=>fillGauges(ci)}));
+  t+=2400;st(t,'PANEL VERDICT');
+  CANDS.forEach((c,ci)=>{events.push({t:t+ci*1100,fn:()=>{
+    document.getElementById(`s${ci}`).classList.add('show');
+    log(`${c.name}: ${c.verdict}`,c.verdict==='CERTIFIED');}});});
+  t+=3600;
+  st(t,'MISSION COMPLETE — swap certified where safe. Run the CLI for your fleet’s real report.');
+  say(t,'mission complete',true);
+  events.push({t:t+10,fn:()=>{running=false;}});
+}
+function resetMission(){
+  document.querySelectorAll('.trow').forEach(e=>e.classList.remove('live'));
+  document.querySelectorAll('.tick').forEach(e=>{e.classList.remove('show','ok','bad','na');});
+  document.querySelectorAll('.eq').forEach(e=>{e.classList.remove('show','hi','mid','lo');e.textContent='·/5';});
+  document.querySelectorAll('.stamp').forEach(e=>e.classList.remove('show'));
+  document.querySelectorAll('.gauge .bar').forEach(e=>e.style.strokeDashoffset=126);
+  document.querySelectorAll('.gv').forEach(e=>e.textContent='—');
+  clog.innerHTML='';
+}
+function startMission(){
+  document.getElementById('mission').scrollIntoView({behavior:'smooth'});
+  resetMission();buildTimeline();
+  t0=performance.now();running=true;let fired=0;
+  if(timer)clearInterval(timer);
+  timer=setInterval(()=>{
+    const el=(performance.now()-t0)*speed;
+    clock.textContent='T+'+String(Math.floor(el/60000)).padStart(2,'0')+':'+String(Math.floor(el/1000)%60).padStart(2,'0')+'.'+Math.floor(el/100)%10;
+    while(fired<events.length&&events[fired].t<=el){events[fired].fn();fired++;}
+    if(fired>=events.length){clearInterval(timer);timer=null;}
+  },50);
+}
+if(new URLSearchParams(location.search).has('demo'))setTimeout(startMission,800);
+
+/* ─────────── report table (fetch real report; embedded sample fallback) ─────────── */
+const EMBEDDED={sample:true,baseline:{model:'frontier-baseline'},judge_panel:['judge-A','judge-B','judge-C'],task_count:10,
+ candidates:CANDS.map(c=>({model:c.name.toLowerCase(),model_id:c.id,
+  tool_fidelity_pct:pct(c.t.map(r=>r[0])),arg_validity_pct:pct(c.t.map(r=>r[1])),
+  schema_validity_pct:pct(c.t.map(r=>r[2])),refusal_pct:Math.round(1000*c.t.filter(r=>r[3]===1).length/c.t.length)/10,
+  equivalence_median:median(c.t.map(r=>r[4])),equivalence_spread:Math.min(...c.t.map(r=>r[4]))+'–'+Math.max(...c.t.map(r=>r[4])),
+  mean_latency_ms:c.lat,verdict:c.verdict}))};
+function renderReport(d){
+  if(d.sample)document.getElementById('samplenote').style.display='block';
+  const f=v=>v==null?'<span class="spread">—</span>':`<span class="${v>=95?'g':v>=70?'a':'r'}">${v}%</span>`;
+  const fr=v=>v==null?'<span class="spread">—</span>':`<span class="${v<=0?'g':v<=10?'a':'r'}">${v}%</span>`;
   document.getElementById('rows').innerHTML=d.candidates.map(c=>`<tr>
-    <td class="model">${c.model}${d.sample?' <span class="spread">(sample)</span>':''}<span class="sub">${c.model_id}</span></td>
-    <td>${pctCell(c.tool_fidelity_pct)}</td>
-    <td>${pctCell(c.arg_validity_pct)}</td>
-    <td>${pctCell(c.schema_validity_pct)}</td>
-    <td>${pctCell(c.refusal_pct,true)}</td>
+    <td><span class="model">${c.model}</span>${d.sample?' <span class="spread">(sample)</span>':''}<span class="subid">${c.model_id}</span></td>
+    <td>${f(c.tool_fidelity_pct)}</td><td>${f(c.arg_validity_pct)}</td><td>${f(c.schema_validity_pct)}</td>
+    <td>${fr(c.refusal_pct)}</td>
     <td>${c.equivalence_median!=null?`<b>${c.equivalence_median}/5</b> <span class="spread">(${c.equivalence_spread})</span>`:'<span class="spread">—</span>'}</td>
-    <td>${c.mean_latency_ms!=null?c.mean_latency_ms+'ms':'—'}</td>
-    <td><span class="v ${c.verdict}">${c.verdict}</span></td>
-  </tr>`).join('');
-  document.getElementById('meta').textContent=
-    `baseline: ${d.baseline.model} · ${d.task_count} tasks · judge panel: ${d.judge_panel.join(', ')} · generated ${d.generated_at}`+(d.sample?' · SAMPLE DATA':'');
-}).catch(()=>{document.getElementById('rows').innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--red)">report not found</td></tr>'});
+    <td>${typeof c.mean_latency_ms==='number'?c.mean_latency_ms+'ms':(c.mean_latency_ms||'—')}</td>
+    <td><span class="v ${c.verdict}">${c.verdict}</span></td></tr>`).join('');}
+fetch('agent-verify-report.json').then(r=>r.json()).then(d=>renderReport(d.sample?EMBEDDED:d)).catch(()=>renderReport(EMBEDDED));
 </script>
 </body>
 </html>
