@@ -7,7 +7,7 @@
 **Tokens are commodities. Quality isn't.**
 Every pricing page tells you what a million tokens costs. None of them tell you what a million *good* tokens costs. Inference Index ranks every major inference provider by **$/MQT — dollars per million quality-adjusted tokens** — using a 10-judge evaluation panel methodology from peer-review-track research.
 
-[**Live Index →**](https://vnmoorthy.github.io/inference-index/) · [Methodology](#-methodology-quality-adjusted-pricing) · [Architecture](#-architecture) · [Pilot Tracks](#-pilot-tracks)
+[**Live Index →**](https://amperesai.github.io/inference-index/) · [Methodology](#-methodology-quality-adjusted-pricing) · [Architecture](#-architecture) · [Pilot Tracks](#-pilot-tracks)
 
 ![status](https://img.shields.io/badge/index-live-brightgreen) ![data](https://img.shields.io/badge/pricing-scraped_from_official_pages-blue) ![judges](https://img.shields.io/badge/quality_panel-10_independent_judges-8A2BE2) ![stack](https://img.shields.io/badge/stack-Apify_·_n8n_·_Bolt-orange) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
@@ -67,7 +67,7 @@ flowchart LR
         G2["commit docs/data.json"]
     end
 
-    SITE["📊 GitHub Pages<br/><b>vnmoorthy.github.io/inference-index</b><br/>zero servers, zero cost, cache-proof"]
+    SITE["📊 GitHub Pages<br/><b>amperesai.github.io/inference-index</b><br/>zero servers, zero cost, cache-proof"]
 
     subgraph CONSUMERS["🎯 Consumers"]
         C1["Databricks pilot<br/>(provider track)"]
@@ -135,7 +135,7 @@ The index is the neutral instrument; the pilots are where it earns money.
 ## 🚀 Quickstart
 
 ```bash
-git clone https://github.com/vnmoorthy/inference-index
+git clone https://github.com/AmperesAI/inference-index
 cd inference-index
 
 # rebuild the index locally from the latest scraped prices

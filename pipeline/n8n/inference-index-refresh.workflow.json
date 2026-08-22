@@ -45,7 +45,7 @@
     },
     {
       "parameters": {
-        "url": "https://vnmoorthy.github.io/inference-index/data.json",
+        "url": "https://amperesai.github.io/inference-index/data.json",
         "options": {}
       },
       "name": "Fetch current index",
@@ -97,7 +97,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.github.com/repos/vnmoorthy/inference-index/dispatches",
+        "url": "https://api.github.com/repos/AmperesAI/inference-index/dispatches",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
