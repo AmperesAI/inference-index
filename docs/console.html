@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pilot Console — Inference Index</title>
+<meta name="description" content="Drag your workload, see your quality-adjusted savings — computed live from the Inference Index.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090c;--panel:#0d1117;--line:#1d2530;--txt:#dbe4ee;--dim:#7c8b9d;--faint:#4a5765;
+    --green:#3ddc84;--red:#ff5d5d;--amber:#ffc24b;--cyan:#4dd0e1;--violet:#b18cff;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--sans:'Inter',-apple-system,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5}
+  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  header{max-width:1080px;margin:0 auto;padding:34px 20px 8px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .logo{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:.5px}
+  .logo span{color:var(--green)}
+  .live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--green);
+    border:1px solid #1d4030;background:#0a1810;border-radius:20px;padding:3px 10px;letter-spacing:1px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .asof{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .tag{max-width:1080px;margin:0 auto;padding:0 20px 8px;color:var(--dim);font-size:15px}
+  .tag b{color:var(--txt)}
+  main{max-width:1080px;margin:16px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:860px){main{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  h2{font-size:13px;font-family:var(--mono);letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:16px}
+  .row{margin-bottom:16px}
+  label{font-family:var(--mono);font-size:11.5px;letter-spacing:1px;color:var(--dim);display:flex;justify-content:space-between;margin-bottom:6px}
+  label b{color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--green)}
+  select,input[type=number]{width:100%;background:#0a0f14;border:1px solid var(--line);color:var(--txt);
+    font-family:var(--mono);font-size:13px;padding:9px 10px;border-radius:6px}
+  .big{font-family:var(--mono);font-weight:600;font-size:40px;line-height:1.1}
+  .sub{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .kpi{background:#0a0f14;border:1px solid var(--line);border-radius:8px;padding:14px}
+  .kpi .v{font-family:var(--mono);font-weight:600;font-size:20px}
+  .kpi .l{font-size:10.5px;color:var(--faint);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+  .g{color:var(--green)}.a{color:var(--amber)}.r{color:var(--red)}
+  .badge{font-size:10px;letter-spacing:1px;border-radius:4px;padding:3px 8px;font-weight:700;font-family:var(--mono)}
+  .badge.v{color:#04110a;background:var(--green)}
+  .badge.p{color:#221a04;background:var(--amber)}
+  .note{font-size:12px;color:var(--faint);margin-top:10px}
+  .annual{grid-column:1/-1;text-align:center;padding:30px 20px}
+  .annual .big{font-size:clamp(40px,7vw,64px);color:var(--green)}
+  footer{max-width:1080px;margin:18px auto 40px;padding:0 20px;color:var(--faint);font-size:12px;font-family:var(--mono);text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">PILOT<span>·CONSOLE</span></div>
+  <div class="live"><span class="dot"></span>LIVE INDEX DATA</div>
+  <div class="asof" id="asof">loading…</div>
+</header>
+<p class="tag"><b>Drag your workload. See your savings.</b> Costs computed live from the <a href="index.html">Inference Index</a>; quality adjustment from the 10-judge panel methodology. <a href="agent-verify.html">Certify the swap →</a></p>
+
+<main>
+  <div class="card">
+    <h2>Your workload</h2>
+    <div class="row"><label>Monthly token volume <b id="volLabel">5.0B</b></label>
+      <input type="range" id="vol" min="1" max="200" value="50"></div>
+    <div class="row"><label>Output share of tokens <b id="outLabel">25%</b></label>
+      <input type="range" id="outshare" min="5" max="60" value="25"></div>
+    <div class="row"><label>Current model</label><select id="cur"></select></div>
+    <div class="row"><label>Downshift candidate</label><select id="cand"></select></div>
+    <p class="note">Blend = your input/output mix applied to each model's official per-token prices. Every price links its source on the <a href="index.html">index</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Simulation <span id="vbadge"></span></h2>
+    <div class="split">
+      <div class="kpi"><div class="v" id="curCost">—</div><div class="l">current $/month</div></div>
+      <div class="kpi"><div class="v" id="candCost">—</div><div class="l">candidate $/month</div></div>
+      <div class="kpi"><div class="v g" id="rawSav">—</div><div class="l">raw savings</div></div>
+      <div class="kpi"><div class="v" id="qix">—</div><div class="l" id="qixLabel">QIX · quality-preserved savings</div></div>
+    </div>
+    <p class="note" id="pairNote"></p>
+  </div>
+
+  <div class="card annual">
+    <div class="sub">projected annual savings (raw)</div>
+    <div class="big" id="annual">$0</div>
+    <div class="sub" id="annualQ"></div>
+  </div>
+</main>
+
+<footer>
+  <a href="https://github.com/AmperesAI/inference-index">github.com/AmperesAI/inference-index</a> · rebuild this console yourself with the Bolt prompt in <span style="color:var(--dim)">bolt/PILOT_CONSOLE_PROMPT.md</span><br>
+  <span style="display:block;margin-top:8px">usable ≠ equivalent: on real traffic a cheap model is usable ~92–95% of the time but equivalent-or-better only ~21–32% — route with escalation.</span>
+</footer>
+
+<script>
+let D=null, rows=[];
+const $=id=>document.getElementById(id);
+const money=v=>'$'+(v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0));
+
+fetch('data.json').then(r=>r.json()).then(d=>{
+  D=d;
+  rows=d.providers.flatMap(p=>p.models.filter(m=>!m.units).map(m=>({...m,provider:p.provider})));
+  rows.sort((a,b)=>(3*b.input_per_1m+b.output_per_1m)-(3*a.input_per_1m+a.output_per_1m));
+  $('asof').textContent='as of '+d.as_of+' · '+rows.length+' models';
+  const opt=m=>`<option value="${m.model}|${m.provider}">${m.model} · ${m.provider}</option>`;
+  $('cur').innerHTML=rows.map(opt).join('');
+  $('cand').innerHTML=rows.map(opt).join('');
+  const strong=rows.find(m=>/70b/i.test(m.model))||rows[0];
+  const cheap=rows.find(m=>/3\.1-8b/i.test(m.model))||rows[rows.length-1];
+  $('cur').value=strong.model+'|'+strong.provider;
+  $('cand').value=cheap.model+'|'+cheap.provider;
+  sim();
+}).catch(()=>{$('asof').textContent='index data unavailable — retry';});
+
+function find(sel){const [m,p]=$(sel).value.split('|');return rows.find(r=>r.model===m&&r.provider===p);}
+function costPerM(m,outShare){return (1-outShare)*m.input_per_1m+outShare*m.output_per_1m;}
+
+function sim(){
+  if(!rows.length)return;
+  const volB=$('vol').value/10, outShare=$('outshare').value/100;
+  $('volLabel').textContent=volB.toFixed(1)+'B';
+  $('outLabel').textContent=Math.round(outShare*100)+'%';
+  const cur=find('cur'), cand=find('cand');
+  const cc=costPerM(cur,outShare)*volB*1000, dc=costPerM(cand,outShare)*volB*1000;
+  const sav=cc>0?(cc-dc)/cc:0;
+  $('curCost').textContent=money(cc);
+  $('candCost').textContent=money(dc);
+  $('rawSav').textContent=Math.round(sav*100)+'%';
+  const pair=(D.verified_pairs||[]).find(v=>v.cheap_model===cand.model);
+  if(pair){
+    const q=Math.round(sav*100*pair.preservation_median*10)/10;
+    $('qix').textContent=q; $('qix').className='v g';
+    $('vbadge').innerHTML='<span class="badge v">VERIFIED PAIR</span>';
+    $('pairNote').textContent=`Panel: ${Math.round(pair.preservation_median*100)}% median preservation (${pair.preservation_spread}). QIX = raw savings × panel median.`;
+    $('annualQ').textContent='quality-preserved (QIX-adjusted): '+money(cc*sav*pair.preservation_median*12)+'/yr';
+  }else{
+    $('qix').textContent='pending'; $('qix').className='v a';
+    $('vbadge').innerHTML='<span class="badge p">PANEL PENDING</span>';
+    $('pairNote').textContent='This pair has not been panel-scored — raw savings only, quality unverified. Run Agent Verify to certify it.';
+    $('annualQ').textContent='quality adjustment pending panel run';
+  }
+  $('annual').textContent=money(Math.max(0,(cc-dc))*12);
+}
+['vol','outshare','cur','cand'].forEach(id=>$(id).addEventListener('input',sim));
+</script>
+</body>
+</html>

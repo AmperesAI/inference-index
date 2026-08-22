@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Agent Verify end-to-end (mock fleet)
+        run: python3 pipeline/mock_fleet.py --selftest
+      - name: Index build
+        run: python3 pipeline/compute_index.py
+      - name: Data + workflow JSON validity
+        run: |
+          python3 - <<'EOF'
+          import json
+          json.load(open('docs/data.json'))
+          json.load(open('docs/agent-verify-report.json'))
+          json.load(open('pipeline/n8n/inference-index-refresh.workflow.json'))
+          [json.loads(l) for l in open('pipeline/agent_tasks.jsonl') if l.strip()]
+          print("all JSON artifacts valid")
+          EOF
